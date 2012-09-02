@@ -1,13 +1,21 @@
 require "rubygems"
 require "sinatra"
 
+require "pry"
+
 # configure sinatra
 enable "sessions"
+
+# our fake db connection
+
+require "fake_mongo"
+$connection = FakeMongo::Connection.new
+
 
 # helper functions
 
 def logged_in?
-	session["user"] != nil
+	current_user != nil
 end
 def login_signup_form action
 	<<-HTML
@@ -21,6 +29,7 @@ def login_signup_form action
 	HTML
 end
 def info_boxes
+  class_name = { "message" => "", "woops" => "alert" }
 	output = ""
 	for key in ["message","woops"] do
 		val = session.delete(key)
@@ -28,7 +37,7 @@ def info_boxes
 			output += ""
 		else
 			output += <<-HTML
-				<p class="#{key}">#{val}</p>
+				<p class="alert-box #{class_name[key]}">#{val}</p>
 			HTML
 		end
 	end
@@ -45,41 +54,57 @@ def valid_signup? name
 	name_pattern =~ name
 end
 def login user
-	session["user"] = user
+	session["user_id"] = user["_id"]
 end
 def logout
-	session.delete("user")
+	session.delete("user_id")
 end
 def current_user
-	session["user"]
+	if session["user_id"]
+		user = users.find({"_id" => session["user_id"]})
+		if user == nil
+			session.delete("user_id")
+		end
+		user
+	else
+		nil
+	end
 end
-def message msg
+def message(msg)
 	session["message"] = msg
 end
-def woops msg
+def woops(msg)
 	session["woops"] = msg
 end
+def users
+	$connection['users']
+end
+def layout(content)
+  <<-HTML
+    <title>Our first web application</title>
+    <link rel=stylesheet href="/stylesheets/foundation.css" />
+    <link rel=stylesheet href="/stylesheets/app.css" />
+    <body>
+      #{content}
+    </body>
+   HTML
+end
 
-# our fake db connection
-
-require "fake_mongo"
-
-connection = FakeMongo::Connection.new
-users = connection['users']
 
 # our routes and handlers
 
 get "/" do
 	if logged_in?
-		<<-HTML
+		layout <<-HTML
 			<h1>Hi #{current_user()["name"]}</h1>
+			#{info_boxes()}
 			<form action="/sessions" method="post">
 				<input type=submit value="Logout" />
 				<input type=hidden name=_method value=delete />
 			</form>
 		HTML
 	else
-		<<-HTML
+		layout <<-HTML
 			<h1>Welcome to my fantastic web app</h1>
 			#{info_boxes()}
 			<p>It doesn't do a lot, but it does that well.</p>
@@ -93,7 +118,7 @@ get "/signup" do
 	if logged_in?()
 		redirect("/")
 	else
-		<<-HTML
+		layout <<-HTML
 			<h1>Signup</h1>
 			#{info_boxes()}
 			#{login_signup_form("/users")}
@@ -105,7 +130,7 @@ get "/login" do
 	if logged_in?()
 		return redirect("/")
 	end
-	<<-HTML
+	layout <<-HTML
 		<h1>Login</h1>
 		#{info_boxes()}
 		#{login_signup_form("/sessions")}
@@ -117,8 +142,8 @@ post "/sessions" do
 		login(user)
 		redirect("/")
 	else
-		woops("Woops, either your username or password was wrong, or you haven't <a href='/'>signed up</a> yet.")
-		redirect('/login', 403)
+		woops("Woops, either your username or password was wrong, or you haven't <a href='/signup'>signed up</a> yet.")
+		redirect('/login')
 	end
 end
 
@@ -127,6 +152,8 @@ post "/users" do
 	  user = users.find({"_id" => params["name"]})
 		if not user
 			user = users.insert("_id" => params["name"], "name" => params["name"])
+		else
+			message("You're already signed up, so we logged you in.")
 		end
 		login(user)
 		redirect("/")
@@ -142,20 +169,17 @@ delete "/sessions" do
 	redirect("/")
 end
 
-
-# admin
-
-get "/admin" do
+get "/our-users" do
 	user_list = ""
 	all_users = users.find.to_a
 	for user in all_users
 		user_list += "<li>#{user["name"]}"
 	end
 	if user_list == ""
-		user_list = "No users yet, get marketing!"
+		user_list = "No users yet, <a href=/signup>be the first</a>!"
 	end
-	<<-HTML
-		<h1>Users</h1>
+	layout <<-HTML
+		<h1>Our users</h1>
 		<ul>
 			#{user_list}
 		</ul>

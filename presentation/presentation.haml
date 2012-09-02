@@ -1,9 +1,19 @@
 %head
   %link{rel:"stylesheet",href:"css/screen.css",media:"screen"}
 %section
-  %h1 Web app
+  %h1
+    Building your first
+    %br
+    %span.hl Web App
+  %p{style:"text-align:center"}
+    %a{href:"http://twttr.com/timruffles"} @timruffles
+    %br
+    %a{href:"http://truffles.me.uk"} truffles.me.uk
+    %br
+    %span.minor all slides and code will be online
+
 %section
-  %h2 What does a web app do
+  %h2 What does a web app do?
   %p Provides the HTML a user sees
   %p By:
   %ul
@@ -14,12 +24,17 @@
 %section
   %h2 Server
   %p Does what you'd think: 'serves up' something to the browser
-  %p HTML
+  %ul
+    %li HTML - the interesting, dynamic bit
+    %li images
+    %li videos
+    %li sound
+    %li CSS, Javascript
 
 %section
   %h2 HTML
   %p Plain text file sent to client.
-  %p May require more requests for non-inlined resources
+  %p May trigger more requests for non-inlined resources
   %ul
     %li images
     %li videos
@@ -54,8 +69,9 @@
     %code http://www.google.co.uk/404.html
   %p
     DNS tells the browser to connect to
-    = succeed "." do
-      %code 173.194.34.128
+    %code 173.194.34.128
+    for
+    %code www.google.co.uk
 
 %section
   %p You send
@@ -372,13 +388,13 @@
   %pre
     :preserve
       get "/" do
-        return "&lt;h1>You just asked for the root path!&lt;/h1>"
+        return "&lt;h1>You asked for the root path!&lt;/h1>"
       end
 %section
   %pre
     :preserve
       get "/" do
-        return "&lt;h1>You just asked for the root path!&lt;/h1>"
+        return "&lt;h1>You asked for the root path!&lt;/h1>"
       end
   %p
     We've called a function for the HTTP verb 'get', which takes a route -
@@ -426,6 +442,28 @@
       def woops(msg)
         session["woops"] = msg
       end
+
+%section
+  %h2 Let's have a look at the app
+
+%section
+  %h2 Next steps
+  %p
+    %a{href:"http://mislav.uniqpath.com/poignant-guide/"} Why's poignant guide to ruby
+    %br
+    %a{href:"http://www.rubycentral.com/pickaxe/"} Pickaxe Book - solid
+    %br
+    %a{href:"http://www.sinatrarb.com/"} Sinatra docs
+    %br
+    %a{href:"http://heroku.com"} Heroku - host w/easy deploy, database, admin
+    %br
+    %a{href:"http://rogerdudler.github.com/git-guide/"} Git guide (drop box for code)
+    %br
+    %a{href:"http://rubyonrails.org/"} Ruby on Rails
+    %br
+    %a{href:"http://sqlzoo.net/"} Intro to SQL
+    %br
+    %a{href:"https://www.owasp.org/index.php/Main_Page"} Security OWASP - especially the top 10
 
 %script{src:"main.js"}
 %script{src:"prettify.js"}
