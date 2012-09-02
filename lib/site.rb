@@ -1,16 +1,13 @@
 require "rubygems"
 require "sinatra"
 
-# defining record types
-User = Struct.new(:name)
-
 # configure sinatra
-enable :sessions
+enable "sessions"
 
 # helper functions
 
 def logged_in?
-	session[:user] != nil
+	session["user"] != nil
 end
 def login_signup_form action
 	<<-HTML
@@ -25,7 +22,7 @@ def login_signup_form action
 end
 def info_boxes
 	output = ""
-	for key in [:message,:woops] do
+	for key in ["message","woops"] do
 		val = session.delete(key)
 		if val == nil
 			output += ""
@@ -48,19 +45,19 @@ def valid_signup? name
 	name_pattern =~ name
 end
 def login user
-	session[:user] = user
+	session["user"] = user
 end
 def logout
-	session.delete(:user)
+	session.delete("user")
 end
 def current_user
-	session[:user]
+	session["user"]
 end
 def message msg
-	session[:message] = msg
+	session["message"] = msg
 end
 def woops msg
-	session[:woops] = msg
+	session["woops"] = msg
 end
 
 # our fake db connection
@@ -75,7 +72,7 @@ users = connection['users']
 get "/" do
 	if logged_in?
 		<<-HTML
-			<h1>Hi #{current_user()[:name]}</h1>
+			<h1>Hi #{current_user()["name"]}</h1>
 			<form action="/sessions" method="post">
 				<input type=submit value="Logout" />
 				<input type=hidden name=_method value=delete />
@@ -116,7 +113,7 @@ get "/login" do
 end
 
 post "/sessions" do
-	if user = users.find({ :_id => params[:name] })
+	if user = users.find({ "_id" => params["name"] })
 		login(user)
 		redirect("/")
 	else
@@ -126,10 +123,10 @@ post "/sessions" do
 end
 
 post "/users" do
-	if valid_signup?(params[:name])
-	  user = users.find({:_id => params[:name]})
+	if valid_signup?(params["name"])
+	  user = users.find({"_id" => params["name"]})
 		if not user
-			user = users.insert(:_id => params[:name], :name => params[:name])
+			user = users.insert("_id" => params["name"], "name" => params["name"])
 		end
 		login(user)
 		redirect("/")
@@ -152,7 +149,7 @@ get "/admin" do
 	user_list = ""
 	all_users = users.find.to_a
 	for user in all_users
-		user_list += "<li>#{user[:name]}"
+		user_list += "<li>#{user["name"]}"
 	end
 	if user_list == ""
 		user_list = "No users yet, get marketing!"
