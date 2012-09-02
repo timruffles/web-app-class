@@ -1,358 +1,431 @@
 %head
-	%link{rel:"stylesheet",href:"css/screen.css",media:"screen"}
+  %link{rel:"stylesheet",href:"css/screen.css",media:"screen"}
 %section
-	%h1 Web app
+  %h1 Web app
 %section
-	%h2 What does a web app do
-	%p Provides the HTML a user sees
-	%p By:
-	%ul
-		%li identifying user
-		%li reloading their data
-		%li generating HTML (or other formats)
+  %h2 What does a web app do
+  %p Provides the HTML a user sees
+  %p By:
+  %ul
+    %li identifying user
+    %li reloading their data
+    %li generating HTML (or other formats)
 
 %section
-	%h2 Server
-	%p Does what you'd think: 'serves up' something to the browser
-	%p HTML
+  %h2 Server
+  %p Does what you'd think: 'serves up' something to the browser
+  %p HTML
 
 %section
-	%h2 HTML
-	%p Plain text file sent to client.
-	%p May require more requests for non-inlined resources
-	%ul
-		%li images
-		%li videos
-		%li sounds
-		%li CSS, Javascript
+  %h2 HTML
+  %p Plain text file sent to client.
+  %p May require more requests for non-inlined resources
+  %ul
+    %li images
+    %li videos
+    %li sounds
+    %li CSS, Javascript
 %section
-	%h2 URLs
-	%table
-		%tr
-			%td http://
-			%td www
-			%td .google
-			%td .com
-			%td /search.html
-			%td ?q=foo
-		%tr
-			%td.colour1 protocol
-			%td.colour2 subdomain
-			%td.colour3 domain
-			%td.colour4 tld
-			%td.colour5 path
-			%td.colour6 query string
+  %h2 URLs
+  %table
+    %tr
+      %td http://
+      %td www
+      %td .google
+      %td .com
+      %td /search.html
+      %td ?q=foo
+    %tr
+      %td.colour1 protocol
+      %td.colour2 subdomain
+      %td.colour3 domain
+      %td.colour4 tld
+      %td.colour5 path
+      %td.colour6 query string
 %section
-	%h2 Identifying a server
-	%p Name is looked up via the Domain Name System, giving an IP of a server.
-	%p Server takes the request, reads the URL and any data POSTed, and replies.
-	%p Request and respose are made up of HTTP headers, and optionally some data.
+  %h2 Identifying a server
+  %p Name is looked up via the Domain Name System, giving an IP of a server.
+  %p Server takes the request, reads the URL and any data POSTed, and replies.
+  %p Request and respose are made up of HTTP headers, and optionally some data.
 %section
-	%h2 Simplified story
-	%p
-		You want google, you ask for
-		%code http://www.google.co.uk/404.html
-	%p
-		DNS tells the browser to connect to
-		= succeed "." do
-			%code 173.194.34.128
+  %h2 Simplified story
+  %p
+    You want google, you ask for
+    %code http://www.google.co.uk/404.html
+  %p
+    DNS tells the browser to connect to
+    = succeed "." do
+      %code 173.194.34.128
 
 %section
-	%p You send
-	%pre
-		%code
-			:preserve
-						GET / HTTP/1.1
-						Host: www.google.co.uk
+  %p You send
+  %pre
+    %code
+      :preserve
+            GET / HTTP/1.1
+            Host: www.google.co.uk
 
 %section
-	%p You get
-	%pre
-		%code
-			:escaped
-				<html lang=en>
-				<meta charset=utf-8>
-				<meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
-				<title>Error 404 (Not Found)!!1</title>
-				<style>/* style */</style>
-				<a href=//www.google.com/><img src=//www.google.com/images/errors/logo_sm.gif alt=Google></a>
-				<p><b>404.</b> <ins>That’s an error.</ins>
-				<p>The requested URL <code>/404.html</code> was not found on this server.  <ins>That’s all we know.</ins>
+  %p You get
+  %pre
+    %code
+      :escaped
+        <html lang=en>
+        <meta charset=utf-8>
+        <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+        <title>Error 404 (Not Found)!!1</title>
+        <style>/* style */</style>
+        <a href=//www.google.com/><img src=//www.google.com/images/errors/logo_sm.gif alt=Google></a>
+        <p><b>404.</b> <ins>That’s an error.</ins>
+        <p>The requested URL <code>/404.html</code> was not found on this server.  <ins>That’s all we know.</ins>
 
 %section
-	%h2 Then
-	%p Your browser sees
-	%pre
-		%code
-			:escaped
-				<img src=//www.google.com/images/errors/logo_sm.gif alt=Google></a>
-	%p so it sends
-	%pre
-		%code
-			:preserve
-				GET /images/errors/logo_sm.gif HTTP/1.1
-				Host: www.google.com
-	%p and receives the image
+  %h2 Then
+  %p Your browser sees
+  %pre
+    %code
+      :escaped
+        <img src=//www.google.com/images/errors/logo_sm.gif alt=Google></a>
+  %p so it sends
+  %pre
+    %code
+      :preserve
+        GET /images/errors/logo_sm.gif HTTP/1.1
+        Host: www.google.com
+  %p and receives the image
 
 %section
-	%h2 Where does the web app come in? 
-	%p Receives request from browser via server
-	%p Provides a response which the server serves up to the client.
+  %h2 Where does the web app come in? 
+  %p Receives request from browser via server
+  %p Provides a response which the server serves up to the client.
 
 %section
-	%h2 How?
-	%h3 Request
-	%pre
-		%code
-			:preserve
-				GET /answer.html HTTP/1.1
-				Host: http://meaningoflife.com
-	%p web app code
-	%pre
-		%code
-			:preserve
-				if path == "/answer.html"
-					respond "&lt;h1>42, obviously&lt;/h1>"
-				end
+  %h2 How?
+  %h3 Request
+  %pre
+    %code
+      :preserve
+        GET /answer.html HTTP/1.1
+        Host: http://meaningoflife.com
+  %p web app code
+  %pre
+    %code
+      :preserve
+        if path == "/answer.html"
+          respond "&lt;h1>42, obviously&lt;/h1>"
+        end
 
 %section
-	%p
-		server gives the app code the
-		%code path
-		\- "/answer.html" as a variable.
-	%p
-		The app code reads the variables, and fires a
-		%code respond
-		function that passes a response to the server. 
-			 
+  %p
+    server gives the app code the
+    %code path
+    \- "/answer.html" as a variable.
+  %p
+    The app code reads the variables, and fires a
+    %code respond
+    function that passes a response to the server. 
+       
 %section
-	%p Response is then served up as:
-	%pre
-		%code
-			:preserve
-				HTTP/1.1 200 OK
-				Content-Type: text/html; charset=UTF-8 
-				Content-Length: 42
-		
-				&lt;h1>42 is quite obviously the answer.&lt;/h1>
-%section
-	%h2 So
-	%p Our task: take HTTP data from client, and respond with HTML.
-	%p We're going to do that using Ruby.
-	%p.minor * static files (images, CSS, JS, videos) are normally served by a server.
+  %p Response is then served up as:
+  %pre
+    %code
+      :preserve
+        HTTP/1.1 200 OK
+        Content-Type: text/html; charset=UTF-8 
+        Content-Length: 42
+    
+        &lt;h1>42 is quite obviously the answer.&lt;/h1>
 
 %section
-	%h2 Ruby
-	%p Ruby is a nice language made by a nice person:
-	%p "I hope to see Ruby help every programmer in the world to be productive, and to enjoy programming, and to be happy"
+  %h2 Types of request
+
+  %p Two main types:
+  %ul
+    %li
+      %code GET&nbsp;
+      retrive something, search for something
+    %li
+      %code POST&nbsp;
+      provide something to server
 
 %section
-	%h2 Ruby looks like
-	%pre
-		%code
-			:preserve
-				description = "ruby is fun"
-				backwards = description.reverse
-		
-				# this is a comment, the computer can't see us here (haha, dumb computer)
-				# so we can leave ourselves notes about what's going to happen
-				# like that the next line will print "nuf si ybur" to the screen
-				puts backwards
+  %h2 How to create from HTML
+  %p
+    %code GET 
+    requests are triggered simply by requesting a URL via a link
+  %p
+    %code POST
+    requests are triggered via form with an
+    %code method=post
+    attribute. They send data.
 
 %section
-	%h2 Fundamentals of programming
-	%p Store things in variables.
-	%pre
-		%code
-			:preserve
-				programming = "fun"
+  %h2 So
+  %p Our task: take HTTP data from client, and respond with HTML.
+  %p We're going to do that using Ruby.
+  %p.minor * static files (images, CSS, JS, videos) are normally served by a server.
+
+%section
+  %h2 Ruby
+  %p
+    Ruby is a nice language made by
+    %a{href:"http://en.wikipedia.org/wiki/Yukihiro_Matsumoto"} Matz
+  %p "I hope to see Ruby help every programmer ... to enjoy programming, and to be happy"
+  %p 
+    It has a 
+    %a{href:"http://mislav.uniqpath.com/poignant-guide"} comic book
+    by 
+    %a{href:"http://en.wikipedia.org/wiki/Why_the_lucky_stiff"} why the lucky stiff
+  %img{src:'img/whys.gif',style:"display:block;margin:0 auto;"}
+
+%section
+  %h2 Ruby looks like
+  %pre
+    %code
+      :preserve
+        description = "ruby is fun"
+        backwards = description.reverse
+    
+        # this is a comment, the computer can't see us here (haha, dumb computer)
+        # so we can leave ourselves notes about what's going to happen
+        # like that the next line will print "nuf si ybur" to the screen
+        puts backwards
+
+%section
+  %h2 Fundamentals of programming
+  %p Store things in variables.
+  %pre
+    %code
+      :preserve
+        programming = "fun"
+  %p You can copy, and overwrite them
+  %pre
+    :preserve
+      programming_web_applications = programming
+      programming = "super-fun"
+
+%section
+  %h2 Logic
+  %pre
+    %code
+      :preserve
+        if (Monday..Thursday).include?(today)
+          puts "boo"
+        else
+          puts "yay!"
+        end
+  %pre
+    :preserve
+      if current_user == nil
+        puts "&lt;h1>logged out&lt;/h1>"
+      end
+
+%section
+  %h2 Functions
+  %p Functions are like black boxes you can reuse. You put things in & get things out.
+  %pre
+    :preserve
+      def add(a,b)
+        return a + b
+      end
+
+      add(5,10)  # 15
+      add(-5,10) # 5
+
+%section
+  %h2 Using functions
+  %p You pass in variables and values as arguments
+  %pre
+    :preserve
+      def circumference(r)
+        Math.PI * 2 * r
+      end
+  
+      radius = 5
+      circum = circumference(radius)
+      puts "the circle's circumference is \#{circum}"
+
+%section
+  %h2 Data
+  %p Inside our programs we keep data in data structures.
+  %pre
+    %code
+      :preserve
+        cats = ["tabby","persian","calico"]
+        hello = {
+          "fr" => "bonjour",
+          "en" => "hello",
+          "th" => "สวัสดี"
+        }
+
+%section
+  %h2
+    Introducing: 
+    %code Array, 
+    %code Hash
+  %p
+    We just met the two you'll be using in Ruby -
+    %code Array
+    and
+    = succeed "." do
+      %code Hash
+  %p
+    %code Array
+    is just a list of things with an order. Days of the week, jobs in a queue etc.
+  %p
+    %code Hash
+    map a key to a value, like a dictionary (you can also call them dictionaries).
+
+%section
+  %h2 Looking up
+  %p
+    You lookup items inside the structures in the same way -
+    = succeed "," do
+      %code []
+    like a little pidgeon hole.
+  %p
+    %code> Arrays&nbsp;
+    are only looked up by position:
+    %code cats[1]
+    is... "tabby" (array indexes (position) start from 0).
+  %p
+    %code> Hashes&nbsp;
+    are looked up by key:
+    %code hello["fr"]
+    is "bonjour".
+
+%section
+  %h2 Databases
+  %p We don't have a variable for every bit of data in our system.
+  %p
+    FB has 500 million users - they don't have a variable
+    = succeed "." do
+      %code user5000000000
+  %p We store data in a database program. We send data to the database, and we can retrieve it later.
+
+%section
+  %h2 Mongo
+  %p We'll be using a very simple database called Mongo.
+  %p Actually a fake version so you don't need to install.
+  %p Looks the same in the code so you'll be able to use Mongo yourself later!
+
+%section
+  %h2 Database example
+  %p Bob's browser sends us
+  %pre
+    %code
+      :preserve
+        GET /?name=bob HTTP/1.1
+  %p in our program, we look up
+  %pre
+    %code
+      :preserve
+        db = FakeMongo::Connection.new
+        users = db["users"]
+    
+        user = users.find({ "_id" => params["name"] })
+        respond("&lt;h1&gt;Hello \#{user["name"]}, you like \#{user["interests"]}&lt;/h1&gt;")
+
+%section
+  %h2 Getting data in
+  %p Let's have a sneak preview of the web app we'll be creating:
+  %pre
+    %code
+      :preserve
+        user = users.insert("_id" => params["name"], "name" => params["name"])
+  %p
+    Pretty simple hey? We're using the name as an id, and also storing it as
+    %code name
+    for consistency.
+
+%section
+  %h2 Updating
+  %p ...is also very simple:
+  %pre
+    %code
+      :preserve
+        users.update(
+          {"_id" => params["name"]},
+          {"visits" => user["visits"] + 1}
+        )
+
+%section
+  %h2 Database summary
+  %p We're using a fake version of a database called Mongo. It's free to download
+  %p We use databases to store data permantently, so we can retrieve it in our programs.
+  %p
+    We
+    %code insert
+    data into the database,
+    %code find
+    it, and we can also
+    %code update
+    it.
+
+%section
+  %h2 Our first web application
+  %p Well done so far...
+
+%section
+  %h2 Meet Sinatra
+  %p Sinatra is an open-source program for writing web applications. It looks like this
+  %pre
+    :preserve
+      get "/" do
+        return "&lt;h1>You just asked for the root path!&lt;/h1>"
+      end
+%section
+  %pre
+    :preserve
+      get "/" do
+        return "&lt;h1>You just asked for the root path!&lt;/h1>"
+      end
+  %p
+    We've called a function for the HTTP verb 'get', which takes a route -
+    = succeed "," do
+      %code "/"
+  %p
+    We write what looks like a function (actually a block - later) to tell it what to do in response.
+  %p If we return HTML, it is sent to the client.
 
 
 %section
-	%h2 Logic
-	%pre
-		%code
-			:preserve
-				if (Monday..Thursday).include?(today)
-					puts "boo"
-				else
-					puts "yay!"
-				end
+  %h2 Responses
+  %p Return HTML, browser will receive it
+  %p
+    %code redirect("/")&nbsp;
+    redirects to the root path
 
 %section
-	%h2 Loops
-	%pre
-		%code
-			:preserve
-				while programming == "fun"
-					puts "yay"
-					sleep 1 
-				end
+  %h2 Sessions
+  %p Store client state between request
+  %p Client state - so logged in vs logged out, not user data
+  %p e.g: things that just happened in client - temporary messages
 
 %section
-	%h2 Functions
-	%p Functions are like black boxes you can reuse. You put things in & get things out.
-	%pre
-		%code
-			:preserve
-						def add(a,b)
-							return a + b
-						end
+  %h2 Using sessions
+  %pre
+    :preserve
+      def login user
+        session["user"] = user
+      end
+  %p Stores a reference to our logged in user's name
+  %pre
+    :preserve
+      def current_user
+        users.find({"_id" => session["user.name"]})
+      end
 
 %section
-	%h2 Using functions
-	%p You pass in variables and values as arguments
-	%pre
-		%code
-			:preserve
-				def circumference(r)
-					Math.PI * 2 * r
-				end
-		
-				radius = 5
-				circum = circumference(radius)
-				puts "the circle's circumference is \#{circum}"
-
-%section
-	%h2 Data
-	%p Inside our programs we keep data in data structures.
-	%pre
-		%code
-			:preserve
-				cats = ["tabby","persian","calico"]
-				hello = {
-					"fr" => "bonjour",
-					"en" => "hello",
-					"th" => "สวัสดี"
-				}
-
-%section
-	%h2
-		Introducing: 
-		%code Array, 
-		%code Hash
-	%p
-		We just met the two you'll be using in Ruby -
-		%code Array
-		and
-		= succeed "." do
-			%code Hash
-	%p
-		%code Array
-		is just a list of things with an order. Days of the week, jobs in a queue etc.
-	%p
-		%code Hash
-		map a key to a value, like a dictionary (you can also call them dictionaries).
-
-%section
-	%h2 Looking up
-	%p
-		You lookup items inside the structures in the same way -
-		= succeed "," do
-			%code []
-		like a little pidgeon hole.
-	%p
-		%code> Arrays&nbsp;
-		are only looked up by position:
-		%code cats[1]
-		is... "tabby" (array indexes (position) start from 0).
-	%p
-		%code> Hashes&nbsp;
-		are looked up by key:
-		%code hello["fr"]
-		is "bonjour".
-
-%section
-	%h2 Databases
-	%p We don't have a variable for every bit of data in our system.
-	%p
-		FB has 500 million users - they don't have a variable
-		= succeed "." do
-			%code user5000000000
-	%p We store data in a database program. We send data to the database, and we can retrieve it later.
-
-%section
-	%h2 Mongo
-	%p We'll be using a very simple database called Mongo.
-	%p Actually a fake version so you don't need to install.
-	%p Looks the same in the code so you'll be able to use Mongo yourself later!
-
-%section
-	%h2 Database example
-	%p Bob's browser sends us
-	%pre
-		%code
-			:preserve
-				GET /?name=bob HTTP/1.1
-	%p in our program, we look up
-	%pre
-		%code
-			:preserve
-				db = FakeMongo::Connection.new
-				users = db["users"]
-		
-				user = users.find({ "_id" => params["name"] })
-				respond("&lt;h1&gt;Hello \#{user["name"]}, you like \#{user["interests"]}&lt;/h1&gt;")
-
-%section
-	%h2 Getting data in
-	%p Let's have a sneak preview of the web app we'll be creating:
-	%pre
-		%code
-			:preserve
-				user = users.insert("_id" => params["name"], "name" => params["name"])
-	%p
-		Pretty simple hey? We're using the name as an id, and also storing it as
-		%code name
-		for consistency.
-
-%section
-	%h2 Updating
-	%p ...is also very simple:
-	%pre
-		%code
-			:preserve
-				users.update({"_id" => params["name"]},{"visits" => user["visits"] + 1})
-
-%section
-	%h2 Database summary
-	%p We're using a fake version of a database called Mongo. It's free to download
-	%p We use databases to store data permantently, so we can retrieve it in our programs.
-	%p
-		We
-		%code insert
-		data into the database,
-		%code find
-		it, and we can also
-		%code update
-		it.
-
-%section
-	%h2 Our first web application
-	%p Well done so far...
-
-%section
-	%h2 Meet Sinatra
-	%p Sinatra is an open-source program for writing web applications. It looks like this
-	%pre
-		:preserve
-			get "/" do
-				return "&lt;h1>You just asked for the root path!&lt;/h1>"
-			end
-%section
-	%pre
-		:preserve
-			get "/" do
-				return "&lt;h1>You just asked for the root path!&lt;/h1>"
-			end
-	%p
-		We've called a function for the HTTP verb 'get', which takes a route -
-		= succeed "," do
-			%code "/"
-	%p
-		We write what looks like a function (actually a block - later) to tell it what to do in response.
-	%p If we return HTML, it is sent to the client.
-
+  %h2 Temporary messages
+  %pre
+    :preserve
+      def message(msg)
+        session["message"] = msg
+      end
+      def woops(msg)
+        session["woops"] = msg
+      end
 
 %script{src:"main.js"}
 %script{src:"prettify.js"}
