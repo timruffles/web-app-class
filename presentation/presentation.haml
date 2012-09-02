@@ -1,0 +1,305 @@
+%head
+	%link{rel:"stylesheet",href:"css/screen.css",media:"screen"}
+%section
+	%h1 Web app
+%section
+	%h2 What does a web app do
+	%p Provides the HTML a user sees
+	%p By:
+	%ul
+		%li identifying user
+		%li reloading their data
+		%li generating HTML (or other formats)
+%section
+	%h2 Server
+	%p Does what you'd think: 'serves up' something to the browser
+	%p HTML
+	%h2 HTML
+	%p Just a plain text file sent over the wire. Arrives, and the browser may trigger additional requests for non-inlined resources
+	%p
+		eg:
+		\- images
+		\- videos
+		\- sounds
+		\- CSS, Javascript
+%section
+	%h2 URLs
+	%table
+		%tr
+			%td http://
+			%td www
+			%td .google
+			%td .com
+			%td /search.html
+			%td ?q=foo
+		%tr
+			%td protocol
+			%td subdomain
+			%td domain
+			%td tld
+			%td path
+			%td query string
+%section
+	%h2 Identifying a server
+	%p Name is looked up via the Domain Name System, giving an IP of a server.
+	%p Server takes the request, reads the URL and any data POSTed, and replies.
+	%p Request and respose are made up of HTTP headers, and optionally some data.
+%section
+	%h2 Simplified story
+	%p
+		You want google, you ask for
+		%code http://www.google.co.uk/404.html
+	%p
+		DNS tells the browser to connect to
+		= succeed "." do
+			%code 173.194.34.128
+	%p You send
+	%pre
+		%code
+			:preserve
+						GET / HTTP/1.1
+						Host: www.google.co.uk
+	%p You get
+	%pre
+		%code
+			:preserve
+				<!DOCTYPE html>
+				<html lang=en>
+						<meta charset=utf-8>
+						<meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+						<title>Error 404 (Not Found)!!1</title>
+						<style>
+								/* style */
+						</style>
+						<a href=//www.google.com/><img src=//www.google.com/images/errors/logo_sm.gif alt=Google></a>
+						<p><b>404.</b> <ins>That’s an error.</ins>
+						<p>The requested URL <code>/404.html</code> was not found on this server.  <ins>That’s all we know.</ins>
+%section
+	%h2 Then
+	%p Your browser sees
+	%pre
+		%code
+			:preserve
+						<img src=//www.google.com/images/errors/logo_sm.gif alt=Google></a>
+	%p so it sends
+	%pre
+		%code
+			:preserve
+						GET /images/errors/logo_sm.gif HTTP/1.1
+						Host: www.google.com
+	%p and receives the image
+%section
+	%h2 So what does a web app do?
+	%p It receives from the server data sent by the client (normally a browser), and provides a response which the server serves up to the client.
+	%p How? The simplest possible web app might be something like
+	%pre
+		%code
+			:preserve
+						GET /answer.html HTTP/1.1
+						Host: http://meaningoflife.com
+	%p web app code
+	%pre
+		%code
+			:preserve
+						if path == "/answer.html"
+								respond "<h1>42, obviously</h1>"
+						end
+	%p
+		server gives the app code the
+		%code path
+		\- "/answer.html" as a variable. The app code reads the variables, and fires a
+		%code respond
+		function that passes a response to the server. This is then served up as:
+	%pre
+		%code
+			:preserve
+						HTTP/1.1 200 OK
+						Content-Type: text/html; charset=UTF-8 
+						Content-Length: 42
+				
+						<h1>42 is quite obviously the answer.</h1>
+%section
+	%h2 So
+	%p Our task is to take all the data sent over HTTP by a client, and respond with some HTML.
+	%p Static files (images, CSS, JS, videos) are normally served by a server.
+	%p We're going to do that using Ruby.
+
+%section
+	%h2 Ruby
+	%p Ruby is a nice language made by a nice person:
+	%p "I hope to see Ruby help every programmer in the world to be productive, and to enjoy programming, and to be happy"
+	%p It looks like this
+	%pre
+		%code
+			:preserve
+						description = "ruby is fun"
+						backwards = description.reverse
+				
+						# this is a comment, the computer can't see us here (haha, dumb computer)
+						# so we can leave ourselves notes about what's going to happen
+						# like that the next line will print "nuf si ybur" to the screen
+						puts backwards
+
+%section
+	%h2 Fundamentals of programming
+	%p Store things in variables.
+	%pre
+		%code
+			:preserve
+						programming = "fun"
+	%p Make decisions
+	%pre
+		%code
+			:preserve
+						while programming == "fun"
+								puts "yay"
+								sleep 1 
+						end
+	%p Logic
+	%pre
+		%code
+			:preserve
+						if (Monday..Thursday).include?(today)
+								puts "boo"
+						else
+								puts "yay!"
+						end
+%section
+	%h2 Functions
+	%p Functions are like black boxes you can reuse in your code. You put things into them and get things out.
+	%pre
+		%code
+			:preserve
+						def add(a,b)
+								return a + b
+						end
+	%p You 'call' a function with arguments. The interpreter looks up the name, assigns the arguments inside the function, runs it, and returns with the return value to where it was called.
+	%pre
+		%code
+			:preserve
+						def circumference(r)
+								Math.PI * 2 * r
+						end
+				
+						radius = 5
+						circum = circumference(radius)
+						puts "the circle's circumference is #{circum}"
+
+%section
+%h2  Data
+	%p Inside our programs we keep data in data structures.
+	%pre
+		%code
+			:preserve
+						cats = ["tabby","persian","calico"]
+						hello = {
+								"fr" => "bonjour",
+								"en" => "hello",
+								"th" => "สวัสดี"
+						}
+	%p
+		We just met the two you'll be using in Ruby -
+		%code Array
+		and
+		= succeed "." do
+			%code Hash
+	%p
+		%code Array
+		is just a list of things with an order. Days of the week, jobs in a queue etc.
+	%p
+		%code Hash
+		map a key to a value, like a dictionary (you can also call them dictionaries).
+	%p
+		You lookup items inside the structure in the same way -
+		= succeed "," do
+			%code []
+		like a little pidgeon hole.
+	%p
+		%code> Array
+		s are only looked up by position:
+		%code cats[1]
+		is... "tabby" (array indexes (position) start from 0).
+	%p
+		%code> Hash
+		es are looked up by key:
+		%code hello["fr"]
+		is "bonjour".
+%section
+	%h2 Databases
+	%p
+		If we had to keep a variable for every bit of data, we'd have to do a lot of typing. Facebook has 500,000,000 users - they don't have a variable
+		= succeed "." do
+			%code user5000000000
+	%p Instead, we store data via another program called a database. We send data to the database to be stored, and we can retrieve it later, even in a later run of our program.
+
+%section
+	%h2 Mongo
+	%p We'll be using a very simple database called Mongo. Actually I've made a fake version of it so you don't need to install it, but it looks the same in the code so you'll be able to use Mongo yourself later!
+
+%section
+	%h2 Database example
+	%p So, let's say we just received this URL from the server. We'll be using a framework called sinatra, so let's see how it puts it into data structures for us.
+	%p Bob's browser sends us
+	%pre
+		%code
+			:preserve
+						GET /?name=bob HTTP/1.1
+	%p in our program, we look up
+	%pre
+		%code
+			:preserve
+				name = params["name"]
+				
+						db = FakeMongo::Connection.new
+						users = db["users"]
+				
+						user = users.find({ "_id" => name })
+				
+						respond("<h1>Hello #{user["name"]}, you like #{user["interests"]}</h1>")
+
+%section
+	%h2 Getting data in
+	%p Let's have a sneak preview of the web app we'll be creating:
+	%pre
+		%code
+			:preserve
+						user = users.insert("_id" => params["name"], "name" => params["name"])
+	%p
+		Pretty simple hey? We're using the name as an id, and also storing it as
+		%code name
+		for consistency.
+	%p Updating is also very simple:
+	%pre
+		%code
+			:preserve
+						users.update({"_id" => params["name"]},{"visits" => user["visits"] + 1})
+
+%section
+	%h2 Database summary
+	%p We're using a fake version of a database called Mongo. It's free to download
+	%p We use databases to store data permantently, so we can retrieve it in our programs.
+	%p
+		We
+		%code insert
+		data into the database,
+		%code find
+		it, and we can also
+		%code update
+		it.
+	%h2 Our first web application
+	%p Well done so far...
+
+%section
+	%h2 Meet Sinatra
+	%p Sinatra is an open-source program for writing web applications. It looks like this
+	%pre
+		%code
+			:preserve
+						get "/" do
+								return "<h1>You just asked for the root path!</h1>"
+						end
+	%p
+		Nice! So it has a function for the HTTP verb 'get', which takes a route -
+		= succeed "," do
+			%code "/"
+		and we write what looks like a function (it's actually a block - another time) to tell it what to do in response. If we return HTML, it is sent to the client.

@@ -1,0 +1,90 @@
+@import normalise
+@import prettify
+
+body
+  font-size: 56px
+  text-align: center
+  background: -webkit-radial-gradient(center, ellipse cover, #fffff9 0%,#ffffea 100%)
+  font-weight: 100
+
+.hl
+  color: #910000
+  font-weight: 600
+
+h1,h2,h3,h4,h5,h6,h7,h8
+  font-weight: 100
+
+h2
+  margin-top: .25em
+
+section
+  display: none
+  &.displayed
+    display: block
+    position: absolute
+    top: 0
+    bottom: 0
+    width: 100%
+
+section:first-child
+  padding-top: 2.5%
+
+ul
+  width: 75%
+  margin-left: auto
+  margin-right: auto
+  text-align: left
+
+h2
+  width: 75%
+  margin-left: auto
+  margin-right: auto
+
+pre
+  font-size: 0.6em
+  text-align: left
+  margin: 5% 10%
+
+.has-commentary
+  margin-bottom: 5%
+  margin-top: 5%
+  font-size: 0.8em
+
+.code-commentary
+  margin-left: 10%
+  font-size: .8em
+  text-align: left
+
+ul.code-commentary, ol.code-commentary
+  width: auto
+
+hr
+  width: 40%
+  margin: 0 auto
+
+.minor
+  font-size: 0.8em
+
+li
+  margin-bottom: 0.25em
+
+table
+  width: 90%
+  margin: 0 auto
+  font-size: 0.5em
+  font-weight: 100
+
+  td
+    padding-bottom: .5em
+    padding-left: .5em
+
+pre
+  background: rgba(255,255,255,0.5)
+  padding: .5em
+
+a
+  font-family: "Helvetica Neue", sans-serif
+  font-weight: 400
+  text-decoration: none
+  color: #910000
+
