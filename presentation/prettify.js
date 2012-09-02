@@ -1,3 +1,8 @@
+//
+//
+// all modifications all preceded by HACK
+//
+//
 // Copyright (C) 2006 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -1376,6 +1381,8 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|\\!|\\!=|\\!==|\\#|\\%|\\%=|&|&&|&
       for (; k < elements.length && clock['now']() < endTime; k++) {
         var cs = elements[k];
         var className = cs.className;
+				
+				// HACK
         if (true || className.indexOf('prettyprint') >= 0) {
           // If the classes includes a language extensions, use it.
           // Language extensions can be specified like
@@ -1418,7 +1425,8 @@ var REGEXP_PRECEDER_PATTERN = '(?:^^\\.?|[+-]|\\!|\\!=|\\!==|\\#|\\%|\\%=|&|&&|&
 
             // do the pretty printing
             prettyPrintingJob = {
-              langExtension: langExtension || "js",
+							// HACK - default to language
+              langExtension: langExtension || "rb",
               sourceNode: cs,
               numberLines: lineNums
             };
