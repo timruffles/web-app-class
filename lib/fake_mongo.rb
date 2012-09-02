@@ -1,35 +1,38 @@
-require "json"
+require "ostruct"
 
 class FakeMongo
-	def initialize
-		@db = JSON.parse(open("db.fakemongo").read)
+
+	class << self
+		def db
+			@db ||= {}
+		end
 	end
 	attr_reader :db
 
 	class Connection
-		def initialize db
+		def initialize
+			@db = FakeMongo.db
 		end
 		def collection name
-			Collection.new(name,db)
-			else
-				nil
-			end
+			Collection.new(name,FakeMongo.db)
 		end
-		alias :collection :[]
+		alias :[] :collection 
 	end
 	class Collection
 		def initialize name, db
 			@db = db
-			@db[name] ||= Struct.new(
+			require "pp"
+			@db[name] ||= OpenStruct.new(
 				:pkey => 0,
 				:rows => {}
 			)
 			@coll = @db[name]
 		end
-		def find query
+		def find query = nil
+			return @coll.rows.values unless query
 			id = query.delete(:_id)
 			raise "Fake Mongo only supports lookup by id" unless id
-			@coll[id]
+			@coll.rows[id]
 		end
 		def insert params
 			if not params[:_id]
