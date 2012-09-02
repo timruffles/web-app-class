@@ -3,7 +3,6 @@
 
 body
   font-size: 56px
-  text-align: center
   background: -webkit-radial-gradient(center, ellipse cover, #fffff9 0%,#ffffea 100%)
   font-weight: 100
 
@@ -11,11 +10,19 @@ body
   color: #910000
   font-weight: 600
 
+p, h3, h4, h5, h6
+  padding-left: 2.5%
+  padding-right: 2.5%
+
 h1,h2,h3,h4,h5,h6,h7,h8
   font-weight: 100
 
+h1
+  text-align: center
+
 h2
   margin-top: .25em
+  text-align: center
 
 section
   display: none
@@ -88,3 +95,7 @@ a
   text-decoration: none
   color: #910000
 
+$colours: crimson, darkorange, gold, greenyellow, mediumpurple, violet
+@for $i from 1 through length($colours)
+  .colour#{$i}
+    color: nth($colours,$i)
