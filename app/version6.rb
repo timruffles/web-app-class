@@ -119,5 +119,6 @@ end
 
 delete "/sessions" do
 	logout()
+	message("See you next time!")
 	redirect("/")
 end
