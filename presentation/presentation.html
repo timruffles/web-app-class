@@ -17,24 +17,19 @@
 </section>
 <section>
   <h2>What does a web app do?</h2>
-  <p>Provides the HTML a user sees</p>
+  <p>Responds to HTTP requests, often with HTML.</p>
   <p>By:</p>
   <ul>
-    <li>identifying user</li>
-    <li>reloading their data</li>
+    <li>interpreting request</li>
+    <li>retrieve/generate data</li>
     <li>generating HTML (or other formats)</li>
   </ul>
 </section>
 <section>
-  <h2>Server</h2>
-  <p>Does what you'd think: 'serves up' something to the browser</p>
-  <ul>
-    <li>HTML - the interesting, dynamic bit</li>
-    <li>images</li>
-    <li>videos</li>
-    <li>sound</li>
-    <li>CSS, Javascript</li>
-  </ul>
+  <h2>Works with a server</h2>
+  <p>Does what you'd think: 'serves up' something to the browser.</p>
+  <p>Handles listening for connections etc, then passes the requests on to our web app.</p>
+  <p>Normally handles requests for static files (images, CSS, JS, videos) without our web app.</p>
 </section>
 <section>
   <h2>HTML</h2>
@@ -69,54 +64,28 @@
   </table>
 </section>
 <section>
-  <h2>Identifying a server</h2>
-  <p>Name is looked up via the Domain Name System, giving an IP of a server.</p>
-  <p>Server takes the request, reads the URL and any data POSTed, and replies.</p>
-  <p>Request and respose are made up of HTTP headers, and optionally some data.</p>
-</section>
-<section>
-  <h2>Simplified story</h2>
+  <h2>Request/response</h2>
   <p>
     You want google, you ask for
-    <code>http://www.google.co.uk/404.html</code>
+    <code>http://www.guardian.co.uk/sports</code>
   </p>
-  <p>
-    DNS tells the browser to connect to
-    <code>173.194.34.128</code>
-    for
-    <code>www.google.co.uk</code>
-  </p>
-</section>
-<section>
   <p>You send</p>
-  <pre><code>    GET / HTTP/1.1&#x000A;    Host: www.google.co.uk&#x000A;</code></pre>
+  <pre><code>    GET /sports HTTP/1.1&#x000A;    Host: www.guardian.co.uk/&#x000A;</code></pre>
 </section>
 <section>
   <p>You get</p>
   <pre><code>&lt;html lang=en&gt;
   &lt;meta charset=utf-8&gt;
-  &lt;meta name=viewport content=&quot;initial-scale=1, minimum-scale=1, width=device-width&quot;&gt;
-  &lt;title&gt;Error 404 (Not Found)!!1&lt;/title&gt;
-  &lt;style&gt;/* style */&lt;/style&gt;
-  &lt;a href=//www.google.com/&gt;&lt;img src=//www.google.com/images/errors/logo_sm.gif alt=Google&gt;&lt;/a&gt;
-  &lt;p&gt;&lt;b&gt;404.&lt;/b&gt; &lt;ins&gt;That’s an error.&lt;/ins&gt;
-  &lt;p&gt;The requested URL &lt;code&gt;/404.html&lt;/code&gt; was not found on this server.  &lt;ins&gt;That’s all we know.&lt;/ins&gt;</code></pre>
-</section>
-<section>
-  <h2>Then</h2>
-  <p>Your browser sees</p>
-  <pre><code>&lt;img src=//www.google.com/images/errors/logo_sm.gif alt=Google&gt;&lt;/a&gt;</code></pre>
-  <p>so it sends</p>
-  <pre><code>GET /images/errors/logo_sm.gif HTTP/1.1&#x000A;Host: www.google.com</code></pre>
-  <p>and receives the image</p>
+  &lt;title&gt;Sport news, comment and results | Sport | The Guardian &lt;/title&gt;
+  ...</code></pre>
 </section>
 <section>
   <h2>Where does the web app come in?</h2>
-  <p>Receives request from browser via server</p>
+  <p>Handed the HTTP request from browser by server.</p>
   <p>Provides a response which the server serves up to the client.</p>
 </section>
 <section>
-  <h2>How?</h2>
+  <h2>Example</h2>
   <h3>Request</h3>
   <pre><code>GET /answer.html HTTP/1.1&#x000A;Host: http://meaningoflife.com</code></pre>
   <p>web app code</p>
@@ -144,11 +113,11 @@
   <ul>
     <li>
       <code>GET&nbsp;</code>
-      retrive something, search for something
+      retrieve something, search for something
     </li>
     <li>
       <code>POST&nbsp;</code>
-      provide something to server
+      provide something to server, for changing state
     </li>
   </ul>
 </section>
@@ -156,20 +125,26 @@
   <h2>How to create from HTML</h2>
   <p>
     <code>GET</code>
-    requests are triggered simply by requesting a URL via a link
+    requests are triggered simply by requesting a URL via a link, or via JS
   </p>
   <p>
     <code>POST</code>
     requests are triggered via form with an
     <code>method=post</code>
-    attribute. They send data.
+    attribute, or via JS, sending data.
   </p>
 </section>
 <section>
-  <h2>So</h2>
-  <p>Our task: take HTTP data from client, and respond with HTML.</p>
+  <h2>Summary</h2>
+  <p>Web apps respond to HTTP requests.</p>
+  <p>They work hand-in-hand with a server, which passes it dynamic requests.</p>
+  <p>They interpret requests, gather data, and transform it into a response.</p>
+</section>
+<section>
+  <h2>Writing a web app</h2>
+  <p>Our task: take HTTP data from client, and respond.</p>
   <p>We're going to do that using Ruby.</p>
-  <p class='minor'>* static files (images, CSS, JS, videos) are normally served by a server.</p>
+  <p>You could also use Python, Javascript (node.js), PHP etc.</p>
 </section>
 <section>
   <h2>Ruby</h2>
@@ -188,7 +163,10 @@
 </section>
 <section>
   <h2>Ruby looks like</h2>
-  <pre><code>description = "ruby is fun"&#x000A;backwards = description.reverse&#x000A;&#x000A;# this is a comment, the computer can't see us here (haha, dumb computer)&#x000A;# so we can leave ourselves notes about what's going to happen&#x000A;# like that the next line will print "nuf si ybur" to the screen&#x000A;puts backwards&#x000A;</code></pre>
+  <pre>description = "ruby is fun"&#x000A;backwards = description.reverse&#x000A;&#x000A;# this is a comment, the computer can't see us here&#x000A;puts "printed backwards '#{backwards}'"&#x000A;</pre>
+  <p>
+    Outputs "printed backwards 'nuf si ybur'"
+  </p>
 </section>
 <section>
   <h2>Fundamentals of programming</h2>
@@ -199,8 +177,8 @@
 </section>
 <section>
   <h2>Logic</h2>
-  <pre><code>if (Monday..Thursday).include?(today)&#x000A;  puts "boo"&#x000A;else&#x000A;  puts "yay!"&#x000A;end</code></pre>
-  <pre>if current_user == nil&#x000A;  puts "&lt;h1>logged out&lt;/h1>"&#x000A;end&#x000A;</pre>
+  <pre>if current_user == nil&#x000A;  puts "&lt;h1>logged out&lt;/h1>"&#x000A;end</pre>
+  <pre><code>get "/signup" do&#x000A;  if logged_in?()&#x000A;    redirect("/")&#x000A;  else&#x000A;    render("signup")&#x000A;  end&#x000A;end&#x000A;</code></pre>
 </section>
 <section>
   <h2>Functions</h2>
@@ -243,7 +221,7 @@
   <p>
     You lookup items inside the structures in the same way -
     <code>[]</code>,
-    like a little pidgeon hole.
+    looks like a pigeon hole.
   </p>
   <p><code>Arrays&nbsp;</code>are only looked up by position:
     <code>cats[1]</code>
@@ -294,7 +272,7 @@
 <section>
   <h2>Database summary</h2>
   <p>We're using a fake version of a database called Mongo. It's free to download</p>
-  <p>We use databases to store data permantently, so we can retrieve it in our programs.</p>
+  <p>We use databases to store data permanently, so we can retrieve it in our programs.</p>
   <p>
     We
     <code>insert</code>
@@ -312,7 +290,7 @@
 <section>
   <h2>Meet Sinatra</h2>
   <p>Sinatra is an open-source program for writing web applications. It looks like this</p>
-  <pre>get "/" do&#x000A;  return "&lt;h1>You asked for the root path!&lt;/h1>"&#x000A;end</pre>
+  <pre>get "/" do&#x000A;  return "&lt;h1>You asked for the root path!&lt;/h1>"&#x000A;end&#x000A;</pre>
 </section>
 <section>
   <pre>get "/" do&#x000A;  return "&lt;h1>You asked for the root path!&lt;/h1>"&#x000A;end</pre>
@@ -341,19 +319,41 @@
 </section>
 <section>
   <h2>Using sessions</h2>
-  <pre>def login user&#x000A;  session["user"] = user&#x000A;end</pre>
+  <pre>def login user&#x000A;  session["user_id"] = user["_id"]&#x000A;end</pre>
   <p>Stores a reference to our logged in user's name</p>
-  <pre>def current_user&#x000A;  users.find({"_id" => session["user.name"]})&#x000A;end&#x000A;</pre>
+  <pre>def current_user&#x000A;  users.find({"_id" => session["user_id"]})&#x000A;end&#x000A;</pre>
 </section>
 <section>
   <h2>Temporary messages</h2>
-  <pre>def message(msg)&#x000A;  session["message"] = msg&#x000A;end&#x000A;def woops(msg)&#x000A;  session["woops"] = msg&#x000A;end&#x000A;</pre>
+  <pre>def message(msg)&#x000A;  session["message"] = msg&#x000A;end&#x000A;def woops(msg)&#x000A;  session["woops"] = msg&#x000A;end</pre>
+  <p>
+    We call these functions to set a message to be displayed next request.
+  </p>
 </section>
 <section>
   <h2>Let's have a look at the app</h2>
+  <p>Simplest possible app - signup, login, logout.</p>
+  <p>Display list of users.</p>
+  <p>Demonstrates routing, redirects, sessions and database.</p>
+</section>
+<section>
+  <h2>Deciding on routes</h2>
+  <p>GET for resources</p>
+  <p>POST for actions</p>
+  <p>
+    Optional: hidden inputs with
+    <code>name=_method</code>
+    to send DELETE and PUT requests
+  </p>
 </section>
 <section>
   <h2>Next steps</h2>
+  <p>Get a host - runs your server for you.</p>
+  <p>Heroku is a great option - use git, updates when code changes.</p>
+  <p>Lots of other options for Ruby hosting - Google.</p>
+</section>
+<section>
+  <h2>Reading</h2>
   <p>
     <a href='http://mislav.uniqpath.com/poignant-guide/'>Why's poignant guide to ruby</a>
     <br />
@@ -370,6 +370,15 @@
     <a href='http://sqlzoo.net/'>Intro to SQL</a>
     <br />
     <a href='https://www.owasp.org/index.php/Main_Page'>Security OWASP - especially the top 10</a>
+  </p>
+</section>
+<section>
+  <h2>Thanks!</h2>
+  <p>Now build great things :)</p>
+  <p style='text-align:center'>
+    <a href='http://twttr.com/timruffles'>@timruffles</a>
+    <br />
+    <a href='http://truffles.me.uk'>truffles.me.uk</a>
   </p>
 </section>
 <script src='main.js'></script>

@@ -14,22 +14,18 @@
 
 %section
   %h2 What does a web app do?
-  %p Provides the HTML a user sees
+  %p Responds to HTTP requests, often with HTML.
   %p By:
   %ul
-    %li identifying user
-    %li reloading their data
+    %li interpreting request
+    %li retrieve/generate data
     %li generating HTML (or other formats)
 
 %section
-  %h2 Server
-  %p Does what you'd think: 'serves up' something to the browser
-  %ul
-    %li HTML - the interesting, dynamic bit
-    %li images
-    %li videos
-    %li sound
-    %li CSS, Javascript
+  %h2 Works with a server
+  %p Does what you'd think: 'serves up' something to the browser.
+  %p Handles listening for connections etc, then passes the requests on to our web app.
+  %p Normally handles requests for static files (images, CSS, JS, videos) without our web app.
 
 %section
   %h2 HTML
@@ -40,6 +36,7 @@
     %li videos
     %li sounds
     %li CSS, Javascript
+
 %section
   %h2 URLs
   %table
@@ -57,29 +54,18 @@
       %td.colour4 tld
       %td.colour5 path
       %td.colour6 query string
-%section
-  %h2 Identifying a server
-  %p Name is looked up via the Domain Name System, giving an IP of a server.
-  %p Server takes the request, reads the URL and any data POSTed, and replies.
-  %p Request and respose are made up of HTTP headers, and optionally some data.
-%section
-  %h2 Simplified story
-  %p
-    You want google, you ask for
-    %code http://www.google.co.uk/404.html
-  %p
-    DNS tells the browser to connect to
-    %code 173.194.34.128
-    for
-    %code www.google.co.uk
 
 %section
+  %h2 Request/response
+  %p
+    You want google, you ask for
+    %code http://www.guardian.co.uk/sports
   %p You send
   %pre
     %code
       :preserve
-            GET / HTTP/1.1
-            Host: www.google.co.uk
+            GET /sports HTTP/1.1
+            Host: www.guardian.co.uk/
 
 %section
   %p You get
@@ -88,35 +74,16 @@
       :escaped
         <html lang=en>
         <meta charset=utf-8>
-        <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
-        <title>Error 404 (Not Found)!!1</title>
-        <style>/* style */</style>
-        <a href=//www.google.com/><img src=//www.google.com/images/errors/logo_sm.gif alt=Google></a>
-        <p><b>404.</b> <ins>That’s an error.</ins>
-        <p>The requested URL <code>/404.html</code> was not found on this server.  <ins>That’s all we know.</ins>
-
-%section
-  %h2 Then
-  %p Your browser sees
-  %pre
-    %code
-      :escaped
-        <img src=//www.google.com/images/errors/logo_sm.gif alt=Google></a>
-  %p so it sends
-  %pre
-    %code
-      :preserve
-        GET /images/errors/logo_sm.gif HTTP/1.1
-        Host: www.google.com
-  %p and receives the image
+        <title>Sport news, comment and results | Sport | The Guardian </title>
+        ...
 
 %section
   %h2 Where does the web app come in? 
-  %p Receives request from browser via server
+  %p Handed the HTTP request from browser by server.
   %p Provides a response which the server serves up to the client.
 
 %section
-  %h2 How?
+  %h2 Example
   %h3 Request
   %pre
     %code
@@ -159,27 +126,33 @@
   %ul
     %li
       %code GET&nbsp;
-      retrive something, search for something
+      retrieve something, search for something
     %li
       %code POST&nbsp;
-      provide something to server
+      provide something to server, for changing state
 
 %section
   %h2 How to create from HTML
   %p
     %code GET 
-    requests are triggered simply by requesting a URL via a link
+    requests are triggered simply by requesting a URL via a link, or via JS
   %p
     %code POST
     requests are triggered via form with an
     %code method=post
-    attribute. They send data.
+    attribute, or via JS, sending data.
 
 %section
-  %h2 So
-  %p Our task: take HTTP data from client, and respond with HTML.
+  %h2 Summary
+  %p Web apps respond to HTTP requests.
+  %p They work hand-in-hand with a server, which passes it dynamic requests.
+  %p They interpret requests, gather data, and transform it into a response.
+
+%section
+  %h2 Writing a web app
+  %p Our task: take HTTP data from client, and respond.
   %p We're going to do that using Ruby.
-  %p.minor * static files (images, CSS, JS, videos) are normally served by a server.
+  %p You could also use Python, Javascript (node.js), PHP etc.
 
 %section
   %h2 Ruby
@@ -197,15 +170,15 @@
 %section
   %h2 Ruby looks like
   %pre
-    %code
-      :preserve
-        description = "ruby is fun"
-        backwards = description.reverse
-    
-        # this is a comment, the computer can't see us here (haha, dumb computer)
-        # so we can leave ourselves notes about what's going to happen
-        # like that the next line will print "nuf si ybur" to the screen
-        puts backwards
+    :preserve
+      description = "ruby is fun"
+      backwards = description.reverse
+
+      # this is a comment, the computer can't see us here
+      puts "printed backwards '\#{backwards}'"
+
+  %p
+    Outputs "printed backwards 'nuf si ybur'"
 
 %section
   %h2 Fundamentals of programming
@@ -223,18 +196,20 @@
 %section
   %h2 Logic
   %pre
-    %code
-      :preserve
-        if (Monday..Thursday).include?(today)
-          puts "boo"
-        else
-          puts "yay!"
-        end
-  %pre
     :preserve
       if current_user == nil
         puts "&lt;h1>logged out&lt;/h1>"
       end
+  %pre
+    %code
+      :preserve
+        get "/signup" do
+          if logged_in?()
+            redirect("/")
+          else
+            render("signup")
+          end
+        end
 
 %section
   %h2 Functions
@@ -298,7 +273,7 @@
     You lookup items inside the structures in the same way -
     = succeed "," do
       %code []
-    like a little pidgeon hole.
+    looks like a pigeon hole.
   %p
     %code> Arrays&nbsp;
     are only looked up by position:
@@ -368,7 +343,7 @@
 %section
   %h2 Database summary
   %p We're using a fake version of a database called Mongo. It's free to download
-  %p We use databases to store data permantently, so we can retrieve it in our programs.
+  %p We use databases to store data permanently, so we can retrieve it in our programs.
   %p
     We
     %code insert
@@ -390,6 +365,7 @@
       get "/" do
         return "&lt;h1>You asked for the root path!&lt;/h1>"
       end
+
 %section
   %pre
     :preserve
@@ -423,13 +399,13 @@
   %pre
     :preserve
       def login user
-        session["user"] = user
+        session["user_id"] = user["_id"]
       end
   %p Stores a reference to our logged in user's name
   %pre
     :preserve
       def current_user
-        users.find({"_id" => session["user.name"]})
+        users.find({"_id" => session["user_id"]})
       end
 
 %section
@@ -442,12 +418,32 @@
       def woops(msg)
         session["woops"] = msg
       end
+  %p
+    We call these functions to set a message to be displayed next request.
 
 %section
   %h2 Let's have a look at the app
+  %p Simplest possible app - signup, login, logout.
+  %p Display list of users.
+  %p Demonstrates routing, redirects, sessions and database.
+
+%section
+  %h2 Deciding on routes
+  %p GET for resources
+  %p POST for actions
+  %p
+    Optional: hidden inputs with
+    %code name=_method
+    to send DELETE and PUT requests
 
 %section
   %h2 Next steps
+  %p Get a host - runs your server for you.
+  %p Heroku is a great option - use git, updates when code changes.
+  %p Lots of other options for Ruby hosting - Google.
+
+%section
+  %h2 Reading
   %p
     %a{href:"http://mislav.uniqpath.com/poignant-guide/"} Why's poignant guide to ruby
     %br
@@ -464,6 +460,14 @@
     %a{href:"http://sqlzoo.net/"} Intro to SQL
     %br
     %a{href:"https://www.owasp.org/index.php/Main_Page"} Security OWASP - especially the top 10
+
+%section
+  %h2 Thanks!
+  %p Now build great things :)
+  %p{style:"text-align:center"}
+    %a{href:"http://twttr.com/timruffles"} @timruffles
+    %br
+    %a{href:"http://truffles.me.uk"} truffles.me.uk
 
 %script{src:"main.js"}
 %script{src:"prettify.js"}
