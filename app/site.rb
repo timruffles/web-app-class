@@ -1,8 +1,6 @@
 require "rubygems"
 require "sinatra"
 
-require "pry"
-
 # configure sinatra
 enable "sessions"
 
