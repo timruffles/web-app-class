@@ -1,0 +1,376 @@
+<head>
+  <link href='css/screen.css' media='screen' rel='stylesheet' />
+</head>
+<section>
+  <h1>
+    Building your first
+    <br />
+    <span class='hl'>Web App</span>
+  </h1>
+  <p style='text-align:center'>
+    <a href='http://twttr.com/timruffles'>@timruffles</a>
+    <br />
+    <a href='http://truffles.me.uk'>truffles.me.uk</a>
+    <br />
+    <span class='minor'>all slides and code will be online</span>
+  </p>
+</section>
+<section>
+  <h2>What does a web app do?</h2>
+  <p>Provides the HTML a user sees</p>
+  <p>By:</p>
+  <ul>
+    <li>identifying user</li>
+    <li>reloading their data</li>
+    <li>generating HTML (or other formats)</li>
+  </ul>
+</section>
+<section>
+  <h2>Server</h2>
+  <p>Does what you'd think: 'serves up' something to the browser</p>
+  <ul>
+    <li>HTML - the interesting, dynamic bit</li>
+    <li>images</li>
+    <li>videos</li>
+    <li>sound</li>
+    <li>CSS, Javascript</li>
+  </ul>
+</section>
+<section>
+  <h2>HTML</h2>
+  <p>Plain text file sent to client.</p>
+  <p>May trigger more requests for non-inlined resources</p>
+  <ul>
+    <li>images</li>
+    <li>videos</li>
+    <li>sounds</li>
+    <li>CSS, Javascript</li>
+  </ul>
+</section>
+<section>
+  <h2>URLs</h2>
+  <table>
+    <tr>
+      <td>http://</td>
+      <td>www</td>
+      <td>.google</td>
+      <td>.com</td>
+      <td>/search.html</td>
+      <td>?q=foo</td>
+    </tr>
+    <tr>
+      <td class='colour1'>protocol</td>
+      <td class='colour2'>subdomain</td>
+      <td class='colour3'>domain</td>
+      <td class='colour4'>tld</td>
+      <td class='colour5'>path</td>
+      <td class='colour6'>query string</td>
+    </tr>
+  </table>
+</section>
+<section>
+  <h2>Identifying a server</h2>
+  <p>Name is looked up via the Domain Name System, giving an IP of a server.</p>
+  <p>Server takes the request, reads the URL and any data POSTed, and replies.</p>
+  <p>Request and respose are made up of HTTP headers, and optionally some data.</p>
+</section>
+<section>
+  <h2>Simplified story</h2>
+  <p>
+    You want google, you ask for
+    <code>http://www.google.co.uk/404.html</code>
+  </p>
+  <p>
+    DNS tells the browser to connect to
+    <code>173.194.34.128</code>
+    for
+    <code>www.google.co.uk</code>
+  </p>
+</section>
+<section>
+  <p>You send</p>
+  <pre><code>    GET / HTTP/1.1&#x000A;    Host: www.google.co.uk&#x000A;</code></pre>
+</section>
+<section>
+  <p>You get</p>
+  <pre><code>&lt;html lang=en&gt;
+  &lt;meta charset=utf-8&gt;
+  &lt;meta name=viewport content=&quot;initial-scale=1, minimum-scale=1, width=device-width&quot;&gt;
+  &lt;title&gt;Error 404 (Not Found)!!1&lt;/title&gt;
+  &lt;style&gt;/* style */&lt;/style&gt;
+  &lt;a href=//www.google.com/&gt;&lt;img src=//www.google.com/images/errors/logo_sm.gif alt=Google&gt;&lt;/a&gt;
+  &lt;p&gt;&lt;b&gt;404.&lt;/b&gt; &lt;ins&gt;That’s an error.&lt;/ins&gt;
+  &lt;p&gt;The requested URL &lt;code&gt;/404.html&lt;/code&gt; was not found on this server.  &lt;ins&gt;That’s all we know.&lt;/ins&gt;</code></pre>
+</section>
+<section>
+  <h2>Then</h2>
+  <p>Your browser sees</p>
+  <pre><code>&lt;img src=//www.google.com/images/errors/logo_sm.gif alt=Google&gt;&lt;/a&gt;</code></pre>
+  <p>so it sends</p>
+  <pre><code>GET /images/errors/logo_sm.gif HTTP/1.1&#x000A;Host: www.google.com</code></pre>
+  <p>and receives the image</p>
+</section>
+<section>
+  <h2>Where does the web app come in?</h2>
+  <p>Receives request from browser via server</p>
+  <p>Provides a response which the server serves up to the client.</p>
+</section>
+<section>
+  <h2>How?</h2>
+  <h3>Request</h3>
+  <pre><code>GET /answer.html HTTP/1.1&#x000A;Host: http://meaningoflife.com</code></pre>
+  <p>web app code</p>
+  <pre><code>if path == "/answer.html"&#x000A;  respond "&lt;h1>42, obviously&lt;/h1>"&#x000A;end&#x000A;</code></pre>
+</section>
+<section>
+  <p>
+    server gives the app code the
+    <code>path</code>
+    - "/answer.html" as a variable.
+  </p>
+  <p>
+    The app code reads the variables, and fires a
+    <code>respond</code>
+    function that passes a response to the server.
+  </p>
+</section>
+<section>
+  <p>Response is then served up as:</p>
+  <pre><code>HTTP/1.1 200 OK&#x000A;Content-Type: text/html; charset=UTF-8 &#x000A;Content-Length: 42&#x000A;&#x000A;&lt;h1>42 is quite obviously the answer.&lt;/h1>&#x000A;</code></pre>
+</section>
+<section>
+  <h2>Types of request</h2>
+  <p>Two main types:</p>
+  <ul>
+    <li>
+      <code>GET&nbsp;</code>
+      retrive something, search for something
+    </li>
+    <li>
+      <code>POST&nbsp;</code>
+      provide something to server
+    </li>
+  </ul>
+</section>
+<section>
+  <h2>How to create from HTML</h2>
+  <p>
+    <code>GET</code>
+    requests are triggered simply by requesting a URL via a link
+  </p>
+  <p>
+    <code>POST</code>
+    requests are triggered via form with an
+    <code>method=post</code>
+    attribute. They send data.
+  </p>
+</section>
+<section>
+  <h2>So</h2>
+  <p>Our task: take HTTP data from client, and respond with HTML.</p>
+  <p>We're going to do that using Ruby.</p>
+  <p class='minor'>* static files (images, CSS, JS, videos) are normally served by a server.</p>
+</section>
+<section>
+  <h2>Ruby</h2>
+  <p>
+    Ruby is a nice language made by
+    <a href='http://en.wikipedia.org/wiki/Yukihiro_Matsumoto'>Matz</a>
+  </p>
+  <p>"I hope to see Ruby help every programmer ... to enjoy programming, and to be happy"</p>
+  <p>
+    It has a
+    <a href='http://mislav.uniqpath.com/poignant-guide'>comic book</a>
+    by
+    <a href='http://en.wikipedia.org/wiki/Why_the_lucky_stiff'>why the lucky stiff</a>
+  </p>
+  <img src='img/whys.gif' style='display:block;margin:0 auto;' />
+</section>
+<section>
+  <h2>Ruby looks like</h2>
+  <pre><code>description = "ruby is fun"&#x000A;backwards = description.reverse&#x000A;&#x000A;# this is a comment, the computer can't see us here (haha, dumb computer)&#x000A;# so we can leave ourselves notes about what's going to happen&#x000A;# like that the next line will print "nuf si ybur" to the screen&#x000A;puts backwards&#x000A;</code></pre>
+</section>
+<section>
+  <h2>Fundamentals of programming</h2>
+  <p>Store things in variables.</p>
+  <pre><code>programming = "fun"</code></pre>
+  <p>You can copy, and overwrite them</p>
+  <pre>programming_web_applications = programming&#x000A;programming = "super-fun"&#x000A;</pre>
+</section>
+<section>
+  <h2>Logic</h2>
+  <pre><code>if (Monday..Thursday).include?(today)&#x000A;  puts "boo"&#x000A;else&#x000A;  puts "yay!"&#x000A;end</code></pre>
+  <pre>if current_user == nil&#x000A;  puts "&lt;h1>logged out&lt;/h1>"&#x000A;end&#x000A;</pre>
+</section>
+<section>
+  <h2>Functions</h2>
+  <p>Functions are like black boxes you can reuse. You put things in & get things out.</p>
+  <pre>def add(a,b)&#x000A;  return a + b&#x000A;end&#x000A;&#x000A;add(5,10)  # 15&#x000A;add(-5,10) # 5&#x000A;</pre>
+</section>
+<section>
+  <h2>Using functions</h2>
+  <p>You pass in variables and values as arguments</p>
+  <pre>def circumference(r)&#x000A;  Math.PI * 2 * r&#x000A;end&#x000A;&#x000A;radius = 5&#x000A;circum = circumference(radius)&#x000A;puts "the circle's circumference is #{circum}"&#x000A;</pre>
+</section>
+<section>
+  <h2>Data</h2>
+  <p>Inside our programs we keep data in data structures.</p>
+  <pre><code>cats = ["tabby","persian","calico"]&#x000A;hello = {&#x000A;  "fr" => "bonjour",&#x000A;  "en" => "hello",&#x000A;  "th" => "สวัสดี"&#x000A;}&#x000A;</code></pre>
+</section>
+<section>
+  <h2>
+    Introducing:
+    <code>Array,</code>
+    <code>Hash</code>
+  </h2>
+  <p>
+    We just met the two you'll be using in Ruby -
+    <code>Array</code>
+    and
+    <code>Hash</code>.
+  </p>
+  <p>
+    <code>Array</code>
+    is just a list of things with an order. Days of the week, jobs in a queue etc.
+  </p>
+  <p>
+    <code>Hash</code>
+    map a key to a value, like a dictionary (you can also call them dictionaries).
+  </p>
+</section>
+<section>
+  <h2>Looking up</h2>
+  <p>
+    You lookup items inside the structures in the same way -
+    <code>[]</code>,
+    like a little pidgeon hole.
+  </p>
+  <p><code>Arrays&nbsp;</code>are only looked up by position:
+    <code>cats[1]</code>
+    is... "tabby" (array indexes (position) start from 0).
+  </p>
+  <p><code>Hashes&nbsp;</code>are looked up by key:
+    <code>hello["fr"]</code>
+    is "bonjour".
+  </p>
+</section>
+<section>
+  <h2>Databases</h2>
+  <p>We don't have a variable for every bit of data in our system.</p>
+  <p>
+    FB has 500 million users - they don't have a variable
+    <code>user5000000000</code>.
+  </p>
+  <p>We store data in a database program. We send data to the database, and we can retrieve it later.</p>
+</section>
+<section>
+  <h2>Mongo</h2>
+  <p>We'll be using a very simple database called Mongo.</p>
+  <p>Actually a fake version so you don't need to install.</p>
+  <p>Looks the same in the code so you'll be able to use Mongo yourself later!</p>
+</section>
+<section>
+  <h2>Database example</h2>
+  <p>Bob's browser sends us</p>
+  <pre><code>GET /?name=bob HTTP/1.1</code></pre>
+  <p>in our program, we look up</p>
+  <pre><code>db = FakeMongo::Connection.new&#x000A;users = db["users"]&#x000A;&#x000A;user = users.find({ "_id" => params["name"] })&#x000A;respond("&lt;h1&gt;Hello #{user["name"]}, you like #{user["interests"]}&lt;/h1&gt;")&#x000A;</code></pre>
+</section>
+<section>
+  <h2>Getting data in</h2>
+  <p>Let's have a sneak preview of the web app we'll be creating:</p>
+  <pre><code>user = users.insert("_id" => params["name"], "name" => params["name"])</code></pre>
+  <p>
+    Pretty simple hey? We're using the name as an id, and also storing it as
+    <code>name</code>
+    for consistency.
+  </p>
+</section>
+<section>
+  <h2>Updating</h2>
+  <p>...is also very simple:</p>
+  <pre><code>users.update(&#x000A;  {"_id" => params["name"]},&#x000A;  {"visits" => user["visits"] + 1}&#x000A;)&#x000A;</code></pre>
+</section>
+<section>
+  <h2>Database summary</h2>
+  <p>We're using a fake version of a database called Mongo. It's free to download</p>
+  <p>We use databases to store data permantently, so we can retrieve it in our programs.</p>
+  <p>
+    We
+    <code>insert</code>
+    data into the database,
+    <code>find</code>
+    it, and we can also
+    <code>update</code>
+    it.
+  </p>
+</section>
+<section>
+  <h2>Our first web application</h2>
+  <p>Well done so far...</p>
+</section>
+<section>
+  <h2>Meet Sinatra</h2>
+  <p>Sinatra is an open-source program for writing web applications. It looks like this</p>
+  <pre>get "/" do&#x000A;  return "&lt;h1>You asked for the root path!&lt;/h1>"&#x000A;end</pre>
+</section>
+<section>
+  <pre>get "/" do&#x000A;  return "&lt;h1>You asked for the root path!&lt;/h1>"&#x000A;end</pre>
+  <p>
+    We've called a function for the HTTP verb 'get', which takes a route -
+    <code>"/"</code>,
+  </p>
+  <p>
+    We write what looks like a function (actually a block - later) to tell it what to do in response.
+  </p>
+  <p>If we return HTML, it is sent to the client.</p>
+</section>
+<section>
+  <h2>Responses</h2>
+  <p>Return HTML, browser will receive it</p>
+  <p>
+    <code>redirect("/")&nbsp;</code>
+    redirects to the root path
+  </p>
+</section>
+<section>
+  <h2>Sessions</h2>
+  <p>Store client state between request</p>
+  <p>Client state - so logged in vs logged out, not user data</p>
+  <p>e.g: things that just happened in client - temporary messages</p>
+</section>
+<section>
+  <h2>Using sessions</h2>
+  <pre>def login user&#x000A;  session["user"] = user&#x000A;end</pre>
+  <p>Stores a reference to our logged in user's name</p>
+  <pre>def current_user&#x000A;  users.find({"_id" => session["user.name"]})&#x000A;end&#x000A;</pre>
+</section>
+<section>
+  <h2>Temporary messages</h2>
+  <pre>def message(msg)&#x000A;  session["message"] = msg&#x000A;end&#x000A;def woops(msg)&#x000A;  session["woops"] = msg&#x000A;end&#x000A;</pre>
+</section>
+<section>
+  <h2>Let's have a look at the app</h2>
+</section>
+<section>
+  <h2>Next steps</h2>
+  <p>
+    <a href='http://mislav.uniqpath.com/poignant-guide/'>Why's poignant guide to ruby</a>
+    <br />
+    <a href='http://www.rubycentral.com/pickaxe/'>Pickaxe Book - solid</a>
+    <br />
+    <a href='http://www.sinatrarb.com/'>Sinatra docs</a>
+    <br />
+    <a href='http://heroku.com'>Heroku - host w/easy deploy, database, admin</a>
+    <br />
+    <a href='http://rogerdudler.github.com/git-guide/'>Git guide (drop box for code)</a>
+    <br />
+    <a href='http://rubyonrails.org/'>Ruby on Rails</a>
+    <br />
+    <a href='http://sqlzoo.net/'>Intro to SQL</a>
+    <br />
+    <a href='https://www.owasp.org/index.php/Main_Page'>Security OWASP - especially the top 10</a>
+  </p>
+</section>
+<script src='main.js'></script>
+<script src='prettify.js'></script>
