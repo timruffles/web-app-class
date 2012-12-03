@@ -295,10 +295,11 @@
   %p We store data in a database program. We send data to the database, and we can retrieve it later.
 
 %section
-  %h2 Mongo
-  %p We'll be using a very simple database called Mongo.
-  %p Actually a fake version so you don't need to install.
-  %p Looks the same in the code so you'll be able to use Mongo yourself later!
+  %h2 YAML::Store
+  %p We'll be using a very simple database called YAML::Store.
+  %p Good example of a key value database.
+  %p stores in a simple local file that is human readable.
+  %p YAML is a markup language - human readable data
 
 %section
   %h2 Database example
@@ -311,10 +312,10 @@
   %pre
     %code
       :preserve
-        db = FakeMongo::Connection.new
-        users = db["users"]
+        $db = YAML::Store.new "my_db.yaml"
+        users = $db["users"]
     
-        user = users.find({ "_id" => params["name"] })
+        user = users[params["name"]]
         respond("&lt;h1&gt;Hello \#{user["name"]}, you like \#{user["interests"]}&lt;/h1&gt;")
 
 %section
@@ -323,7 +324,12 @@
   %pre
     %code
       :preserve
-        user = users.insert("_id" => params["name"], "name" => params["name"])
+        new_user = { "name" => params["name"], "created_at" => Time.new, "visits" => 1 }
+        current_users = $db["users"]
+        $db.transaction do
+          users[ params["name"] ] = new_user
+          $db["users"] = users
+        end
   %p
     Pretty simple hey? We're using the name as an id, and also storing it as
     %code name
@@ -335,23 +341,28 @@
   %pre
     %code
       :preserve
-        users.update(
-          {"_id" => params["name"]},
-          {"visits" => user["visits"] + 1}
-        )
+        current_users = users
+        user = current_users[ params["name"] ]
+        $db.transaction do
+          $db["users"] = current_users.merge({
+            params["name"] => user.merge({"visits" => user["visits"] + 1})
+          })
+        end
 
 %section
   %h2 Database summary
-  %p We're using a fake version of a database called Mongo. It's free to download
+  %p We're using a human readable file based database called YAML::Store. It comes with Ruby.
   %p We use databases to store data permanently, so we can retrieve it in our programs.
   %p
     We
-    %code insert
-    data into the database,
-    %code find
+    %code create
+    new data in the database,
+    %code retrieve
     it, and we can also
     %code update
-    it.
+    or 
+    %code delete
+    it. CRUD makes a basic web app!
 
 %section
   %h2 Our first web application
@@ -399,13 +410,13 @@
   %pre
     :preserve
       def login user
-        session["user_id"] = user["_id"]
+        session["user_id"] = user["name"]
       end
   %p Stores a reference to our logged in user's name
   %pre
     :preserve
       def current_user
-        users.find({"_id" => session["user_id"]})
+        users[ session["user_id"] ]
       end
 
 %section

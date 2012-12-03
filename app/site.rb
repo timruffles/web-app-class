@@ -4,10 +4,9 @@ require "sinatra"
 # configure sinatra
 enable "sessions"
 
-# our fake db connection
+require "yaml/store"
 
-require "fake_mongo"
-$connection = FakeMongo::Connection.new
+$db = YAML::Store.new "my_site.store"
 
 
 # helper functions
@@ -52,14 +51,15 @@ def valid_signup? name
 	name_pattern =~ name
 end
 def login user
-	session["user_id"] = user["_id"]
+	session["user_id"] = user["name"]
 end
 def logout
 	session.delete("user_id")
 end
+require "pp"
 def current_user
 	if session["user_id"]
-		user = users.find({"_id" => session["user_id"]})
+		user = users[session["user_id"]]
 		if user == nil
 			session.delete("user_id")
 		end
@@ -75,7 +75,10 @@ def woops(msg)
 	session["woops"] = msg
 end
 def users
-	$connection['users']
+	users = $db.transaction(true) do
+		$db['users']
+	end
+	users or {}
 end
 def layout(content)
   <<-HTML
@@ -96,6 +99,7 @@ get "/" do
 		layout <<-HTML
 			<h1>Hi #{current_user()["name"]}</h1>
 			#{info_boxes()}
+			<p>Look at your fellow <a href="/users">users</a>.</p>
 			<form action="/sessions" method="post">
 				<input type=submit value="Logout" />
 				<input type=hidden name=_method value=delete />
@@ -105,7 +109,7 @@ get "/" do
 		layout <<-HTML
 			<h1>Welcome to my fantastic web app</h1>
 			#{info_boxes()}
-			<p>It doesn't do a lot, but it does that well.</p>
+			<p>It doesn't do a lot, but it does that well. Look at all our our <a href="/users">users</a>.</p>
 			<h2>Signup</h2>
 			#{login_signup_form("/users")}
 		HTML
@@ -136,7 +140,7 @@ get "/login" do
 end
 
 post "/sessions" do
-	if user = users.find({ "_id" => params["name"] })
+	if user = users[params["name"]]
 		login(user)
 		redirect("/")
 	else
@@ -147,9 +151,13 @@ end
 
 post "/users" do
 	if valid_signup?(params["name"])
-	  user = users.find({"_id" => params["name"]})
+	  user = users[params["name"]]
 		if not user
-			user = users.insert("_id" => params["name"], "name" => params["name"])
+			user = { "name" => params["name"], "created_at" => Time.now }
+			current_users = users
+			$db.transaction do
+				$db["users"] = current_users.merge({ params["name"] => user })
+			end
 		else
 			message("You're already signed up, so we logged you in.")
 		end
@@ -167,11 +175,12 @@ delete "/sessions" do
 	redirect("/")
 end
 
-get "/our-users" do
+get "/users" do
 	user_list = ""
-	all_users = users.find.to_a
-	for user in all_users
-		user_list += "<li>#{user["name"]}"
+	all_users = users
+	for name, user in all_users
+		pp name, user
+		user_list += "<li>#{user["name"]} - signed up #{user["created_at"].to_s}</li>"
 	end
 	if user_list == ""
 		user_list = "No users yet, <a href=/signup>be the first</a>!"
