@@ -100,6 +100,10 @@ get "/login" do
     #{login_signup_form("/sessions")}
   HTML
 end
+puts "in the right place"
+get "/users" do
+	puts users.inspect
+end
 
 post "/sessions" do
   login({"_id" => "you"})

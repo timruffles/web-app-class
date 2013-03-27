@@ -1,4 +1,4 @@
-require "rubygems"
+enkrequire "rubygems"
 require "sinatra"
 
 # configure sinatra
@@ -13,7 +13,7 @@ $connection = FakeMongo::Connection.new
 # helper functions
 
 def logged_in?
-	current_user != nil
+	current_user() != nil
 end
 def login_signup_form action
 	<<-HTML
@@ -90,10 +90,16 @@ end
 
 
 # our routes and handlers
+#
+#
+# 
+get "/users" do
+	puts users.inspect
+end
 
 get "/" do
 	if logged_in?
-		layout <<-HTML
+		layout(<<-HTML
 			<h1>Hi #{current_user()["name"]}</h1>
 			#{info_boxes()}
 			<form action="/sessions" method="post">
@@ -101,6 +107,7 @@ get "/" do
 				<input type=hidden name=_method value=delete />
 			</form>
 		HTML
+		)
 	else
 		layout <<-HTML
 			<h1>Welcome to my fantastic web app</h1>
