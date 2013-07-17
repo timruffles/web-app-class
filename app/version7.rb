@@ -106,7 +106,7 @@ end
 
 
 # database - choose either file_database for local, or relational_database for heroku
-require_relative "./file_database"
+require_relative "./relational_database"
 
 # Both files define the same functions:
 #
