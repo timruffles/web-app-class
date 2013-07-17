@@ -29,14 +29,7 @@ def layout(content)
 end
 
 def valid_signup? name
-	name_pattern = / 
-		\A         		# start of string
-		[a-z]				  # starts with a letter
-		[a-z ]{0,60}  # then 0-60 letters or spaces
-		[a-z]         # finishes with a letter ( so in all, shortest possible name is two letters )
-		\Z       	    # end of string
-	/xi 
-	name_pattern =~ name
+  name.length > 1 && name.length < 30
 end
 def message(msg)
 	session["message"] = msg
@@ -112,7 +105,7 @@ post "/users" do
 		login(user)
 		redirect("/")
 	else
-		woops("Sorry, your name needs to be 2-60 letters or spaces.")
+		woops("Sorry, your name needs to be 2-30 letters or spaces.")
 		redirect('/')
 	end
 end

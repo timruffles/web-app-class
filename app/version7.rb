@@ -84,7 +84,7 @@ end
 
 # validations
 def valid_signup? name
-  name.length > 0 && name.length < 30
+  name.length > 1 && name.length < 30
 end
 def valid_blather? text
   text.length > 0 && text.length <= 141
