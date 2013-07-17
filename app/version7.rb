@@ -1,13 +1,10 @@
 require "rubygems"
 require "sinatra"
+require "pp"
+require "pry"
 
 # configure sinatra
 enable "sessions"
-
-require "yaml/store"
-
-$db = YAML::Store.new "my_site.store"
-
 
 # View helper functions
 def login_signup_form action
@@ -52,7 +49,7 @@ def blather_stream_html blathers
     blather_html += """
       <li class='blather'>
         <span class='time'>#{blather_time_format(blather["created_at"])}</span>
-        <a href='/users/#{blather["user_id"]}' class='author'>#{blather["user_id"]}</a>
+        <a href='/users/#{blather["author_name"]}' class='author'>#{blather["author_name"]}</a>
         <span class='text'>#{blather_text_to_html(blather["text"])}</span>
       </li>
     """
@@ -108,92 +105,44 @@ def get_mentions text
 end
 
 
-# database
-require "securerandom"
-def all_users
-	$db.transaction(true) do
-		$db['users'] or {}
-	end
-end
-def find_user id
-  all_users().fetch(id)
-end
-def find_blather id
-	$db.transaction() do
-		$db["blathers"] ||= {}
-    $db["blathers"].fetch(id)
-  end
-end
-def get_user_id user
-  user["name"]
-end
-def create_user user
-	$db.transaction() do
-    $db["users"] ||= {}
-		$db["users"][params["name"]] = user
-	end
-end
-def create_blather text, user
-  new_blather = {
-    "text" => text,
-    "created_at" => Time.now,
-    "_id" => SecureRandom.uuid,
-    "mentions" => get_mentions(text),
-    "user_id" => get_user_id(user)
-  }
-	$db.transaction() do
-		$db["blathers"] ||= {}
-    $db["blathers"][new_blather["_id"]] = new_blather
-	end
-end
-def find_user_blathers user
-	$db.transaction() do
-    blathers = []
-		for id, blather in $db["blathers"]
-      if blather["user_id"] == get_user_id(user)
-        blathers.push(blather)
-      end
-    end
-    blathers.reverse()
-	end
-end
-def find_mentions_for user
-	$db.transaction() do
-    blathers = []
-		for id, blather in $db["blathers"]
-      if blather["mentions"].include?(get_user_id(user))
-        blathers.push(blather)
-      end
-    end
-    blathers
-	end
-end
-def find_user_home_stream user
-  whole_stream = find_mentions_for(user) + find_user_blathers(user)
-  whole_stream = whole_stream.sort_by do |blather|
-    blather["created_at"]
-  end
-  whole_stream = whole_stream.uniq() do |blather|
-    blather["_id"]
-  end
-  whole_stream.reverse().slice(0..9)
-end
+# database - choose either file_database for local, or relational_database for heroku
+require_relative "./relational_database"
+
+# Both files define the same functions:
+#
+# find_user(id) - get single user by id
+# find_by_name(name) - get single user by name
+# find_blather(id) - get single blather by id
+# get_user_id(user) - get attribute used for user id
+# create_user(user_params) - creates a user from name
+# create_blather(text,user) - creates a blather for a user
+# find_user_blathers(user) - find a users' blathers
+# find_mentions_for(user) - find any blathers mentioning user
+# find_user_home_stream(user) - find complete home screen (mentions + blathers) for user
 
 # authentication
 def logged_in?
 	current_user() != nil
 end
+def ensure_logged_in!
+  if not logged_in?()
+    woops("You must be logged in to do that!")
+    redirect("/login")
+  end
+end
 def login user
-	session["user_id"] = user["name"]
+	session["user_id"] = get_user_id(user)
 end
 def logout
 	session.delete("user_id")
 end
 def current_user
+  pp session
 	if session["user_id"]
-		user = all_users[session["user_id"]]
+		user = find_user(session["user_id"])
 		if user == nil
 			session.delete("user_id")
+      return redirect("/")
 		end
 		user
 	else
@@ -248,15 +197,16 @@ end
 
 post("/users") do
 	if valid_signup?(params["name"])
-	  user = all_users()[params["name"]]
+	  user = find_by_name(params["name"])
 		if not user
 			user = { "name" => params["name"], "created_at" => Time.now }
       create_user(user)
       message("Let's get blathering!")
+      login(user)
 		else
 			message("You're already signed up, so we logged you in.")
+      login(user)
 		end
-		login(user)
 		redirect("/blather")
 	else
 		woops("Sorry, your name needs to be 2-60 letters or spaces.")
@@ -277,7 +227,7 @@ get("/login") do
 end
 
 post("/sessions") do
-	if user = all_users[params["name"]]
+	if user = find_by_name(params["name"])
 		login(user)
 		redirect("/")
 	else
@@ -293,9 +243,9 @@ delete("/sessions") do
 end
 
 
-get("/users/:id") do
+get("/users/:name") do
   
-  user = find_user(params["id"])
+  user = find_by_name(params["name"])
   if !user
     raise Sinatra::NotFound.new
   end
@@ -330,6 +280,7 @@ get("/blather") do
 end
 
 post("/blather") do
+  ensure_logged_in!
   text = params.fetch("text")
   if valid_blather?(text)
     create_blather(text, current_user())
