@@ -7,12 +7,20 @@ uri = URI.parse string
 host = uri.host
 db = uri.path[1..-1]
 port = uri.port
+pass = uri.password
+user = uri.user
 
-$conn = PG.connect(
+auth = if pass
+  {:user => user, :password => pass }
+else
+  {}
+end
+
+$conn = PG.connect({
   :dbname => db,
   :port => port,
   :host => host
-)
+}.merge(auth))
 
 # run this function to create the database, or copy and paste into the dbconsole
 def create_database
