@@ -1,2 +1,2 @@
-require './version7.rb'
+require './app/version7.rb'
 run Sinatra::Application
