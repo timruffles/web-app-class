@@ -106,13 +106,12 @@ end
 
 
 # database - choose either file_database for local, or relational_database for heroku
-require_relative "./relational_database"
+require_relative "./file_database"
 
 # Both files define the same functions:
 #
 # find_user(id) - get single user by id
 # find_by_name(name) - get single user by name
-# find_blather(id) - get single blather by id
 # get_user_id(user) - get attribute used for user id
 # create_user(user_params) - creates a user from name
 # create_blather(text,user) - creates a blather for a user
@@ -293,3 +292,13 @@ post("/blather") do
   end
 end
 
+not_found do
+  """
+  <h1>404</h1>
+  <p class='alert-box alert'>That's geek-speak for 'what are you blathering about?'.</p>
+  """
+end
+
+error KeyError do
+  raise  Sinatra::NotFound.new
+end

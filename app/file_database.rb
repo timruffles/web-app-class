@@ -2,24 +2,13 @@ require "yaml/store"
 $db = YAML::Store.new "my_site.store"
 require "securerandom"
 
-def find_user id
-	$db.transaction(true) do
-		$db['users'] ||= {}
-		$db['users'][id]
-	end
-end
 def find_by_name name
-	$db.transaction(true) do
+	$db.transaction() do
 		$db['users'] ||= {}
-    $db['users'].find {|user| user["name"] == name }
+    $db['users'][name]
 	end
 end
-def find_blather id
-	$db.transaction() do
-		$db["blathers"] ||= {}
-    $db["blathers"].fetch(id)
-  end
-end
+alias :find_user :find_by_name
 def get_user_id user
   user["name"]
 end
@@ -32,6 +21,7 @@ end
 def create_blather text, user
   new_blather = {
     "text" => text,
+    "author_name" => user["name"],
     "created_at" => Time.now,
     "_id" => SecureRandom.uuid,
     "mentions" => get_mentions(text),

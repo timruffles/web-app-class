@@ -53,15 +53,6 @@ def find_user id
     [id]
   ).first
 end
-def find_blather id
-  $conn.exec_params(
-    """SELECT b.*, u.name as author_name
-    FROM blathers b
-    INNER JOIN users u ON b.user_id = u.id
-    WHERE id = $1""",
-    [id]
-  ).first
-end
 def get_user_id user
   user["id"]
 end
