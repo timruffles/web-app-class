@@ -57,7 +57,7 @@ def blather_stream_html blathers
   blather_html
 end
 def blather_time_format time
-  time.strftime("%P")
+  time.strftime("%-l%P %-d %b")
 end
 def blather_text_to_html text
   mentions = get_mentions(text)
@@ -137,7 +137,6 @@ def logout
 	session.delete("user_id")
 end
 def current_user
-  pp session
 	if session["user_id"]
 		user = find_user(session["user_id"])
 		if user == nil
@@ -172,9 +171,8 @@ get("/") do
 		HTML
 	else
 		layout(<<-HTML
-			<h1>Welcome to my fantastic web app</h1>
+			<h1>Welcome to Blatherer</h1>
 			#{info_boxes()}
-			<p>It doesn't do a lot, but it does that well. Look at all our our <a href="/users">users</a>.</p>
 			<h2>Signup</h2>
 			#{login_signup_form("/users")}
 		HTML
@@ -270,6 +268,9 @@ end
 
 get("/blather") do
   layout( <<-HTML
+    #{home_link()}
+    <h2>Some new blathering</h2>
+    #{info_boxes()}
     <form action="/blather" method="post">
       <label>What are you blathering about?</label>
       <input type="text" name="text" maxlength="141" autofocus />

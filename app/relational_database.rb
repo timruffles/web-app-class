@@ -82,22 +82,19 @@ def create_blather text, user
       "'#{$conn.escape_string(mention)}'"
     end.join(",")
     mentioned_users = $conn.exec(
-      "SELECT id, name FROM users WHERE name IN (#{escaped_mentions})"
-    )
-    mentioned_users = Hash[mentioned_users.map do |user|
-      [user["name"],get_user_id(user)]
-    end]
+      "SELECT id FROM users WHERE name IN (#{escaped_mentions})"
+    ).to_a
   else
     mentioned_users = {}
   end
   $conn.transaction do
     new_blather_id = $conn.exec_params(
-      "INSERT INTO blathers (text, created_at, user_id) VALUES ($1,$2,$3)",
+      "INSERT INTO blathers (text, created_at, user_id) VALUES ($1,$2,$3) RETURNING id",
       [text,Time.now,get_user_id(user)]
-    )
+    ).to_a.first
     if mentioned_users.length > 0
-      inserts = mentioned_users.map do |name,id|
-        "('#{$conn.escape_string(name)}',#{id})"
+      inserts = mentioned_users.map do |user|
+        "(#{new_blather_id["id"]},#{user["id"]})"
       end.join(", ")
       $conn.exec("""
         INSERT INTO blathers_mentioned_users (blather_id, user_id)
