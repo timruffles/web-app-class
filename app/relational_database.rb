@@ -68,7 +68,7 @@ end
 def create_user user
   result = $conn.exec_params(
     "INSERT INTO users (name,created_at) VALUES ($1,$2) RETURNING id",
-    [user["name"],db_time(user["created_at"])]
+    [user["name"],user["created_at"]]
   )
   user["id"] = result.first["id"]
 end
@@ -93,7 +93,7 @@ def create_blather text, user
   $conn.transaction do
     new_blather_id = $conn.exec_params(
       "INSERT INTO blathers (text, created_at, user_id) VALUES ($1,$2,$3)",
-      [text,db_time(Time.now),get_user_id(user)]
+      [text,Time.now,get_user_id(user)]
     )
     if mentioned_users.length > 0
       inserts = mentioned_users.map do |name,id|
