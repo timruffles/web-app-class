@@ -2,6 +2,7 @@ require "rubygems"
 require "sinatra"
 
 enable :sessions
+set :session_secret, 'really secret'
 
 # helper functions
 
@@ -44,9 +45,8 @@ def woops(msg)
 	session["woops"] = msg
 end
 def info_boxes
-  class_name = { "message" => "", "woops" => "alert" }
-	output = ""
-	for key in ["message","woops"] do
+    class_name = { "message" => "", "woops" => "alert" }
+	["message","woops"].each do |key|
 		val = session.delete(key)
 		if val == nil
 			output += ""
@@ -108,7 +108,7 @@ end
 
 post "/users" do
 	if valid_signup?(params["name"])
-    user = {"_id" => params["name"]}
+    	user = {"_id" => params["name"]}
 		login(user)
 		redirect("/")
 	else

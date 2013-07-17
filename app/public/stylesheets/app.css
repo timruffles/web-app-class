@@ -14,7 +14,20 @@
 body {
   padding: 5%;
 }
-
+.blather {
+  list-style-type: none;
+}
+.blather .text {
+  display: block;
+  clear: both;
+}
+.blather .author {
+  font-weight: bold;
+  float: left;
+}
+.blather .time {
+  float: right;
+}
 
 
 

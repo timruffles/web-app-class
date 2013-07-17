@@ -3,7 +3,7 @@ require "sinatra"
 
 # our routes and handlers
 
-get "/" do
+get("/") do
   <<-HTML
     <title>Our first web application</title>
     <link rel=stylesheet href="/stylesheets/foundation.css" />
@@ -23,7 +23,7 @@ get "/" do
   HTML
 end
 
-get "/login" do
+get("/login") do
   <<-HTML
     <title>Our first web application</title>
     <link rel=stylesheet href="/stylesheets/foundation.css" />

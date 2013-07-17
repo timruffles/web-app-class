@@ -1,0 +1,43 @@
+---
+users:
+  tim:
+    created_at: 2013-07-17 12:57:21.010755000 +01:00
+    name: tim
+  bob:
+    name: bob
+    created_at: 2013-07-17 13:05:30.851383000 +01:00
+blathers:
+  d823fab0-5598-47f2-9a47-8638814d50ab:
+    text: foo blah and @bob
+    created_at: 2013-07-17 12:58:44.700287000 +01:00
+    _id: d823fab0-5598-47f2-9a47-8638814d50ab
+    mentions:
+    - bob
+    user_id: tim
+  76302267-b81d-4cce-b9bd-f9ba2b081160:
+    text: foo blah and @bob
+    created_at: 2013-07-17 12:59:01.781892000 +01:00
+    _id: 76302267-b81d-4cce-b9bd-f9ba2b081160
+    mentions:
+    - bob
+    user_id: tim
+  88feecff-3949-4458-a1de-1555daa69675:
+    text: stuff
+    created_at: 2013-07-17 13:04:24.415049000 +01:00
+    _id: 88feecff-3949-4458-a1de-1555daa69675
+    mentions: []
+    user_id: tim
+  330a44f7-5edf-4f33-89ce-5023a69ac8ca:
+    text: ! '@tim is great'
+    created_at: 2013-07-17 13:04:43.168306000 +01:00
+    _id: 330a44f7-5edf-4f33-89ce-5023a69ac8ca
+    mentions:
+    - tim
+    user_id: tim
+  079473af-82e7-4ed0-b54f-edf9796622e4:
+    text: ! '@tim is silly'
+    created_at: 2013-07-17 13:05:37.423946000 +01:00
+    _id: 079473af-82e7-4ed0-b54f-edf9796622e4
+    mentions:
+    - tim
+    user_id: bob

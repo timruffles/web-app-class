@@ -1,11 +1,17 @@
 require "rubygems"
 require "sinatra"
 
-enable :sessions
+enable(:sessions)
 
 # helper functions
 
-def login_signup_form action
+
+# feature request:
+# each time a user creates a session
+# store how many pages they've viewed this session
+	# by increasing a count for every request
+
+def login_signup_form(action)
 	<<-HTML
 		<form action='#{action}' method=post>
 			<label>
@@ -29,6 +35,7 @@ end
 
 def login user
 	session["user_id"] = user["_id"]
+	session["page_count"] = 1
 end
 def current_user
 	session["user_id"]
@@ -40,12 +47,23 @@ def logout
 	session.delete("user_id")
 end
 
+
+def record_visit
+	if logged_in?
+		session["page_count"] = session["page_count"] + 1
+	end
+end
+def number_of_pages_visited
+	session["page_count"]
+end
+
 # our routes and handlers
 
-get "/" do
+get("/") do
+  record_visit()
   if logged_in?
 		layout <<-HTML
-			<h1>Hi #{current_user()}</h1>
+			<h1>Hi #{current_user()}, you've visited #{number_of_pages_visited} pages this session</h1>
 			<form action="/sessions" method="post">
 				<input type=submit value="Logout" />
 				<input type=hidden name=_method value=delete />
@@ -61,7 +79,7 @@ get "/" do
 	end
 end
 
-get "/login" do
+get("/login") do
   layout <<-HTML
     <h1>Signup</h1>
     #{login_signup_form("/sessions")}
@@ -79,7 +97,7 @@ post "/users" do
   redirect("/")
 end
 
-delete "/sessions" do
+post "/sessions/delete" do
 	logout()
 	redirect("/")
 end
