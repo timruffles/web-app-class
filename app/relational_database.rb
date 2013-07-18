@@ -1,5 +1,7 @@
 require "pg"
 require "uri"
+require "date"
+set :session_secret, 'relational database'
 
 string = ENV.fetch("DATABASE_URL","postgres://postgres@localhost/my_first_webapp")
 

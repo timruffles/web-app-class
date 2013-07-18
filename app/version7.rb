@@ -3,6 +3,14 @@ require "sinatra"
 require "pp"
 require "pry"
 
+unless Kernel.respond_to?(:require_relative)
+  module Kernel
+    def require_relative(path)
+      require File.join(File.dirname(caller[0]), path.to_str)
+    end
+  end
+end
+
 # configure sinatra
 enable "sessions"
 
@@ -97,7 +105,7 @@ def get_mentions text
   words = text.split(" ")
   mentions = []
   for word in words
-    if word[0] == "@"
+    if word[0,1] == "@"
       mentions.push(word.slice(1..-1))
     end
   end
@@ -297,8 +305,4 @@ not_found do
   <h1>404</h1>
   <p class='alert-box alert'>That's geek-speak for 'what are you blathering about?'.</p>
   """
-end
-
-error KeyError do
-  raise  Sinatra::NotFound.new
 end

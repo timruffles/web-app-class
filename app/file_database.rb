@@ -1,6 +1,7 @@
 require "yaml/store"
 $db = YAML::Store.new "my_site.store"
 require "securerandom"
+set :session_secret, 'file database'
 
 def find_by_name name
 	$db.transaction() do
