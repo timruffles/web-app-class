@@ -2,6 +2,17 @@
   <link href='css/screen.css' media='screen' rel='stylesheet' />
 </head>
 <section>
+  <h2>While you wait:</h2>
+  <p>Install:</p>
+  <ul>
+    <li>Ruby (Windows only): http://rubyinstaller.org</li>
+    <li>Git: http://git-scm.com/downloads</li>
+    <li>PostgreSQL (Windows): http://www.postgresql.org/download/windows/</li>
+    <li>PostgreSQL (Mac): http://postgresapp.com/</li>
+    <li>Heroku tools: https://toolbelt.heroku.com</li>
+  </ul>
+</section>
+<section>
   <h1>
     Building your first
     <br />
@@ -16,18 +27,23 @@
   </p>
 </section>
 <section>
-  <h2>What does a web app do?</h2>
-  <p>Responds to HTTP requests, often with HTML.</p>
+  <h2>What is a web app?</h2>
+  <p>An application accessible via the browser</p>
+  <p>Captures, retrieves and displays user data</p>
+  <p>Data can be video, text, photos etc</p>
+</section>
+<section>
+  <h2>How does it do it?</h2>
   <p>By:</p>
   <ul>
     <li>interpreting request</li>
-    <li>retrieve/generate data</li>
-    <li>generating HTML (or other formats)</li>
+    <li>retrieving/generating data</li>
+    <li>generating HTML to display (or other formats)</li>
   </ul>
 </section>
 <section>
   <h2>Works with a server</h2>
-  <p>Does what you'd think: 'serves up' something to the browser.</p>
+  <p>Servers do what you'd think: 'serve up' something to the browser.</p>
   <p>Handles listening for connections etc, then passes the requests on to our web app.</p>
   <p>Normally handles requests for static files (images, CSS, JS, videos) without our web app.</p>
 </section>
@@ -233,60 +249,6 @@
   </p>
 </section>
 <section>
-  <h2>Databases</h2>
-  <p>We don't have a variable for every bit of data in our system.</p>
-  <p>
-    FB has 500 million users - they don't have a variable
-    <code>user5000000000</code>.
-  </p>
-  <p>We store data in a database program. We send data to the database, and we can retrieve it later.</p>
-</section>
-<section>
-  <h2>YAML::Store</h2>
-  <p>We'll be using a very simple database called YAML::Store.</p>
-  <p>Good example of a key value database.</p>
-  <p>stores in a simple local file that is human readable.</p>
-  <p>YAML is a markup language - human readable data</p>
-</section>
-<section>
-  <h2>Database example</h2>
-  <p>Bob's browser sends us</p>
-  <pre><code>GET /?name=bob HTTP/1.1</code></pre>
-  <p>in our program, we look up</p>
-  <pre><code>$db = YAML::Store.new "my_db.yaml"&#x000A;users = $db["users"]&#x000A;&#x000A;user = users[params["name"]]&#x000A;respond("&lt;h1&gt;Hello #{user["name"]}, you like #{user["interests"]}&lt;/h1&gt;")&#x000A;</code></pre>
-</section>
-<section>
-  <h2>Getting data in</h2>
-  <p>Let's have a sneak preview of the web app we'll be creating:</p>
-  <pre><code>new_user = { "name" => params["name"], "created_at" => Time.new, "visits" => 1 }&#x000A;current_users = $db["users"]&#x000A;$db.transaction do&#x000A;  users[ params["name"] ] = new_user&#x000A;  $db["users"] = users&#x000A;end</code></pre>
-  <p>
-    Pretty simple hey? We're using the name as an id, and also storing it as
-    <code>name</code>
-    for consistency.
-  </p>
-</section>
-<section>
-  <h2>Updating</h2>
-  <p>...is also very simple:</p>
-  <pre><code>current_users = users&#x000A;user = current_users[ params["name"] ]&#x000A;$db.transaction do&#x000A;  $db["users"] = current_users.merge({&#x000A;    params["name"] => user.merge({"visits" => user["visits"] + 1})&#x000A;  })&#x000A;end&#x000A;</code></pre>
-</section>
-<section>
-  <h2>Database summary</h2>
-  <p>We're using a human readable file based database called YAML::Store. It comes with Ruby.</p>
-  <p>We use databases to store data permanently, so we can retrieve it in our programs.</p>
-  <p>
-    We
-    <code>create</code>
-    new data in the database,
-    <code>retrieve</code>
-    it, and we can also
-    <code>update</code>
-    or
-    <code>delete</code>
-    it. CRUD makes a basic web app!
-  </p>
-</section>
-<section>
   <h2>Our first web application</h2>
   <p>Well done so far...</p>
 </section>
@@ -350,10 +312,63 @@
   </p>
 </section>
 <section>
+  <h2>Databases</h2>
+  <p>We don't have a variable for every bit of data in our system.</p>
+  <p>
+    FB has 500 million users - they don't have a variable
+    <code>user5000000000</code>.
+  </p>
+  <p>We store data in a database program. We send data to the database, and we can retrieve it later.</p>
+</section>
+<section>
+  <h2>Persistant</h2>
+  <p>Data stored in databases is persistant - kept permanantly</p>
+  <p>Data in our programs is transient - kept in RAM which is cleared after our program quits</p>
+</section>
+<section>
+  <h2>Types of database</h2>
+  <p>Relational - PostgreSQL, MySQL</p>
+  <p>Key/value - CouchDB, MongoDB</p>
+  <p>Data-structures - Redis</p>
+  <p>Graph - Neo4J</p>
+</section>
+<section>
+  <h2>PostgreSQL</h2>
+  <p>We're using a Relational Database called PostgreSQL</p>
+  <p>Open source, fast, reliable</p>
+  <img src='img/postgres.png' />
+</section>
+<section>
+  <h2>Relational database intuition</h2>
+  <p>Very much like spreadsheets</p>
+  <p>Columns are the facts about each entity - row</p>
+  <p>e.g columns: name, age, rows: bob, sarah</p>
+</section>
+<section>
+  <h2>Relational database example</h2>
+</section>
+<section>
+  <h2>Database summary</h2>
+  <p>We're using a Relational Database called PostgreSQL</p>
+  <p>We query it via SQL</p>
+  <p>We use databases to store data permanently, so we can retrieve it in our programs.</p>
+  <p>
+    We
+    <code>create</code>
+    new data in the database,
+    <code>retrieve</code>
+    it, and we can also
+    <code>update</code>
+    or
+    <code>delete</code>
+    it. CRUD makes a basic web app!
+  </p>
+</section>
+<section>
   <h2>Next steps</h2>
-  <p>Get a host - runs your server for you.</p>
-  <p>Heroku is a great option - use git, updates when code changes.</p>
-  <p>Lots of other options for Ruby hosting - Google.</p>
+  <p>Expand the app</p>
+  <p>Look at an ORM - object relational mapper - like ActiveRecord</p>
+  <p>Look at Rails</p>
 </section>
 <section>
   <h2>Reading</h2>
