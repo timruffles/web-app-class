@@ -523,3 +523,11 @@ a {
 
 .colour6 {
   color: violet; }
+
+.table_demo table {
+  background: white;
+  margin-bottom: 1em; }
+.table_demo td, .table_demo th {
+  text-align: left;
+  padding: 0 1rem;
+  border: 1px solid #555555; }

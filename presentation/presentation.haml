@@ -1,4 +1,5 @@
 %head
+  %title Building your first Web App
   %link{rel:"stylesheet",href:"css/screen.css",media:"screen"}
 
 %section
@@ -310,6 +311,12 @@
   %p Well done so far...
 
 %section
+  %h2 Let's have a look at the app - Blatherer
+  %p A brave new micro-blogging platform (AKA Twitter-killer)
+  %p Make posts, mention users
+  %p Demonstrates routing, redirects, sessions and database.
+
+%section
   %h2 Meet Sinatra
   %p Sinatra is an open-source program for writing web applications. It looks like this
   %pre
@@ -374,12 +381,6 @@
     We call these functions to set a message to be displayed next request.
 
 %section
-  %h2 Let's have a look at the app
-  %p Simplest possible app - signup, login, logout.
-  %p Display list of users.
-  %p Demonstrates routing, redirects, sessions and database.
-
-%section
   %h2 Deciding on routes
   %p GET for resources
   %p POST for actions
@@ -424,6 +425,109 @@
 
 %section
   %h2 Relational database example
+
+  .table_demo
+    %table
+      %thead
+        %tr
+          %td{colspan:2} Users
+      %tbody
+        %tr
+          %th id
+          %th name
+        %tr
+          %td 1
+          %td Bob
+        %tr
+          %td 47
+          %td Alice
+    %table
+      %thead
+        %tr
+          %td{colspan:3} Messages
+      %tbody
+        %tr
+          %th id
+          %th text
+          %th author_id
+        %tr
+          %td 1
+          %td Hi alice
+          %td 1
+        %tr
+          %td 2
+          %td Hello @bob
+          %td 47
+
+%section
+  %h2 SQL
+  %p Standard Query Language
+  %p Same between any database supporting SQL
+  %p Designed for non-technical people to use...
+
+%section
+  %h2 Getting data
+  %p All or some columns
+  %p Use AS to rename columns in results
+  %pre
+    :preserve
+      SELECT * FROM users
+      SELECT id, name FROM users
+      SELECT id AS user_id, name FROM users
+
+%section
+  %h2 Filtering rows
+  %p Same for all commands you can sub-set
+  %pre
+    :preserve
+      SELECT * FROM users WHERE age > 25;
+      SELECT id, name FROM users WHERE name LIKE "al%";
+
+%section
+  %h2 Inserting data
+  %pre
+    :preserve
+      INSERT INTO users (name, age) VALUES ('bob',25), ('alice',27);
+
+%section
+  %h2 Updating data
+  %p Use where to choose rows updated
+  %pre
+    :preserve
+      UPDATE users SET name = "Bob" WHERE name = 'bob';
+
+%section
+  %h2 Deleting data
+  %p Use where to choose rows updated
+  %pre
+    :preserve
+      DELETE users WHERE name = 'bob';
+
+%section
+  %h2 Joins
+  %p When we have two tables storing related data we can join them
+  %p Returns rows including data from both
+  %p The below will return all messages with the name column from users
+  %pre
+    :preserve
+      SELECT messages.*, user.name AS author_name
+      FROM messages
+      INNER JOIN users ON messages.user_id = user.id
+
+%section
+  %h2 Joins example
+  %pre
+    :preserve
+      > SELECT m.*, u.name AS author_name
+        FROM messages m
+        INNER JOIN users u ON u.id = m.user_id;
+
+       id |          text       | user_id | author_name
+      ----+---------------------+---------+------------+
+        1 | stuff               |       1 | tim
+        6 | where is @foo?      |       1 | tim
+       10 | with @bob at lunch  |       3 | foo
+      (3 rows)
 
 %section
   %h2 Database summary

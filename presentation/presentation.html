@@ -1,4 +1,5 @@
 <head>
+  <title>Building your first Web App</title>
   <link href='css/screen.css' media='screen' rel='stylesheet' />
 </head>
 <section>
@@ -253,6 +254,12 @@
   <p>Well done so far...</p>
 </section>
 <section>
+  <h2>Let's have a look at the app - Blatherer</h2>
+  <p>A brave new micro-blogging platform (AKA Twitter-killer)</p>
+  <p>Make posts, mention users</p>
+  <p>Demonstrates routing, redirects, sessions and database.</p>
+</section>
+<section>
   <h2>Meet Sinatra</h2>
   <p>Sinatra is an open-source program for writing web applications. It looks like this</p>
   <pre>get "/" do&#x000A;  return "&lt;h1>You asked for the root path!&lt;/h1>"&#x000A;end&#x000A;</pre>
@@ -294,12 +301,6 @@
   <p>
     We call these functions to set a message to be displayed next request.
   </p>
-</section>
-<section>
-  <h2>Let's have a look at the app</h2>
-  <p>Simplest possible app - signup, login, logout.</p>
-  <p>Display list of users.</p>
-  <p>Demonstrates routing, redirects, sessions and database.</p>
 </section>
 <section>
   <h2>Deciding on routes</h2>
@@ -346,6 +347,95 @@
 </section>
 <section>
   <h2>Relational database example</h2>
+  <div class='table_demo'>
+    <table>
+      <thead>
+        <tr>
+          <td colspan='2'>Users</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>id</th>
+          <th>name</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>Bob</td>
+        </tr>
+        <tr>
+          <td>47</td>
+          <td>Alice</td>
+        </tr>
+      </tbody>
+    </table>
+    <table>
+      <thead>
+        <tr>
+          <td colspan='3'>Messages</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>id</th>
+          <th>text</th>
+          <th>author_id</th>
+        </tr>
+        <tr>
+          <td>1</td>
+          <td>Hi alice</td>
+          <td>1</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Hello @bob</td>
+          <td>47</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+<section>
+  <h2>SQL</h2>
+  <p>Standard Query Language</p>
+  <p>Same between any database supporting SQL</p>
+  <p>Designed for non-technical people to use...</p>
+</section>
+<section>
+  <h2>Getting data</h2>
+  <p>All or some columns</p>
+  <p>Use AS to rename columns in results</p>
+  <pre>SELECT * FROM users&#x000A;SELECT id, name FROM users&#x000A;SELECT id AS user_id, name FROM users&#x000A;</pre>
+</section>
+<section>
+  <h2>Filtering rows</h2>
+  <p>Same for all commands you can sub-set</p>
+  <pre>SELECT * FROM users WHERE age > 25;&#x000A;SELECT id, name FROM users WHERE name LIKE "al%";&#x000A;</pre>
+</section>
+<section>
+  <h2>Inserting data</h2>
+  <pre>INSERT INTO users (name, age) VALUES ('bob',25), ('alice',27);&#x000A;</pre>
+</section>
+<section>
+  <h2>Updating data</h2>
+  <p>Use where to choose rows updated</p>
+  <pre>UPDATE users SET name = "Bob" WHERE name = 'bob';&#x000A;</pre>
+</section>
+<section>
+  <h2>Deleting data</h2>
+  <p>Use where to choose rows updated</p>
+  <pre>DELETE users WHERE name = 'bob';&#x000A;</pre>
+</section>
+<section>
+  <h2>Joins</h2>
+  <p>When we have two tables storing related data we can join them</p>
+  <p>Returns rows including data from both</p>
+  <p>The below will return all messages with the name column from users</p>
+  <pre>SELECT messages.*, user.name AS author_name&#x000A;FROM messages&#x000A;INNER JOIN users ON messages.user_id = user.id&#x000A;</pre>
+</section>
+<section>
+  <h2>Joins example</h2>
+  <pre>> SELECT m.*, u.name AS author_name&#x000A;  FROM messages m&#x000A;  INNER JOIN users u ON u.id = m.user_id;&#x000A;&#x000A; id |          text       | user_id | author_name&#x000A;----+---------------------+---------+------------+&#x000A;  1 | stuff               |       1 | tim&#x000A;  6 | where is @foo?      |       1 | tim&#x000A; 10 | with @bob at lunch  |       3 | foo&#x000A;(3 rows)&#x000A;</pre>
 </section>
 <section>
   <h2>Database summary</h2>

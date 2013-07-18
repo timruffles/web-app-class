@@ -99,3 +99,12 @@ $colours: crimson, darkorange, gold, greenyellow, mediumpurple, violet
 @for $i from 1 through length($colours)
   .colour#{$i}
     color: nth($colours,$i)
+
+.table_demo
+  table
+    background: #fff
+    margin-bottom: 1em
+  td,th
+    text-align: left
+    padding: 0 1rem
+    border: 1px solid #555
