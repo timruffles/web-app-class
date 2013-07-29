@@ -38,8 +38,9 @@ def woops(msg)
 	session["woops"] = msg
 end
 def info_boxes
-    class_name = { "message" => "", "woops" => "alert" }
-	["message","woops"].each do |key|
+  class_name = { "message" => "", "woops" => "alert" }
+	output = ""
+	for key in ["message","woops"] do
 		val = session.delete(key)
 		if val == nil
 			output += ""

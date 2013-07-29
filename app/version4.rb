@@ -5,6 +5,15 @@ require "sinatra"
 # helper functions
 
 def login_signup_form action
+	<<-HTML
+		<form action='#{action}' method=post>
+			<label>
+				Name
+				<input type=text name=name />
+			</label>
+			<input type=submit />
+		</form>
+	HTML
 end
 
 def layout(content)
